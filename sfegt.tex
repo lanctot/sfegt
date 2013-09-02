@@ -243,31 +243,30 @@ Evolutionary game theory~\cite{MaynardSmith82,Gintis09} has been used to model a
 systems such as population dynamics~\cite{HS98}, animalistic behavior in nature~\cite{MSP73}, and 
 multiagent learning~\cite{Tuyls07What,Tuyls03Selection}. The most popular and widely-studied population dynamic is the
 so-called {\it replicator dynamic}~\cite{TJ78}. Generally, replicator dynamics quantify 
-increases in the proportion of individuals in a population based on their individual fitness levels as determined through 
-payoffs of individual competitions. Agents with higher fitness replicate faster than agents with lower fitness and the resulting 
+increases in the proportion of individuals in a population based on their relative fitness levels as determined through 
+payoffs of competitions. Agents with higher fitness replicate more than agents with lower fitness and the resulting 
 process leads to an evolutionary game that models population change under these dynamics. 
 
 Multiagent systems that evolve under replicator dynamics have desirable properties and connections to classical game theory. 
 For example, fixed points of populations under the replicator dynamics correspond to a Nash equilibrium of the underlying normal 
-form game~\cite{Gintis09}. Stability of the system can be analyzed using theory of dynamical systems. In addition, average payoff 
+form game and stability of the system can be analyzed using theory of dynamical systems~\cite{Gintis09}. In addition, average payoff 
 of a population increases~\cite{HS98} and dominated strategies do not survive~\cite{Gintis09}. 
 
 In the classic setup, the underlying stage game is a symmetric normal-form game. However, this limits the interaction
 among the agents and payoffs are determined from a single decision from each agent. In general, the games played among agents 
 can be more complex, such as multi-step games such as extensive-form games. Evolutionary dynamics have been analyzed in  
 extensive-form games~\cite{Cressman03}, however the focus is mainly on subgame-decomposable models such as perfect information and
-simultenous move games. In general, these games may have imperfect information, which are generally not decomposable into smaller 
-subgames. 
+simultenous move games. In general, imperfect information games cannot be easily decomposed into smaller subgames. 
 
 Recently, efficient replicator dynamics have been proposed for the general case of extensive-form stage games with 
-imperfect information~\cite{Gatti13Efficient} based on sequence-form representations~\cite{SequenceFormLPs}. 
+imperfect information~\cite{Gatti13Efficient}, based on sequence-form representations~\cite{SequenceFormLPs}. 
 In their paper, the authors present discrete and continuous time replicator dynamics
 for extensive-form imperfect information games that can be represented with much less computational requirements than its equivalent
-normal-form game. However, the authors present no experimental results nor do they consider the case beyond two players. 
-In this paper, we present the first experimental results that confirms convergence of these sequence-form replicator dynamics (SFRD) 
-to a Nash equilibrium in two-player Kuhn poker. We then extend replicator dynamics to the $n$-player games and show convergence in 
-3-player Kuhn poker. Finally, we provide conditions under which convergence to an equilibrium can be expected by relating the 
-dynamics to no-regret algorithms used to learn equilibrium strategies in self-play. 
+normal-form game. However, the authors do not present experimental results nor do they consider the case beyond two players. 
+In this paper, we present the first experimental evidence conforming the convergence of the sequence-form replicator dynamics  
+to a Nash equilibrium in two-player Kuhn poker. We then extend these replicator dynamics to the $n$-player games and show convergence 
+properties in 3-player Kuhn poker. Finally, we provide conditions under which convergence to an equilibrium can be expected by relating the 
+dynamics to no-regret learning algorithms used to compute approximate equilibrium strategies in self-play. 
 
 
 %, based on sequence-form representations~\cite{SequenceFormLPs}. 
