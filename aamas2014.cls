@@ -1409,7 +1409,7 @@
 \newtoks\boilerplateBefore
 \newtoks\boilerplateAfter
 %\global\acmcopyr={X-XXXXX-XX-X/XX/XX}  % Default - 5/11/2001 *** Gerry
-\global\copyrtyr={2013}                % Default - 3/3/2003 *** Gerry
+\global\copyrtyr={2014}                % Default - 3/3/2003 *** Gerry
 \def\CopyrightYear#1{\global\copyrtyr{#1}}
 %\def\crdata#1{\global\acmcopyr{#1}}
 \def\permission#1{\global\boilerplate{#1}}
@@ -1422,10 +1422,9 @@
 % acr July 24 altered for 2010
 \newtoks\copyrightetc
 \global\boilerplateBefore={{\bf Appears in:} }
-\global\boilerplateAfter={{\it Proceedings of the 12th International
-Conference on Autonomous Agents and Multiagent Systems (AAMAS 2013), 
-Ito, Jonker, Gini, and Shehory (eds.), May, 6--10, 2013, Saint Paul, 
-Minnesota, USA.}}
+\global\boilerplateAfter={{\it Proceedings of the 13th International
+Conference on Autonomous Agents and Multiagent Systems (AAMAS 2014), 
+Lomuscio, Scerri, Bazzan, Huhns (eds.), May, 5--9, 2014, Paris, France.}}
 \global\copyrightetc{Copyright \copyright\ \the\copyrtyr , 
 International Foundation for Autonomous Agents and Multiagent Systems (www.ifaamas.org). All rights reserved.}
 
