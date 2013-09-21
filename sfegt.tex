@@ -37,6 +37,8 @@
 % This is the document class for full camera ready papers and extended abstracts repsectively 
 
 \newcommand{\bE}{\mathbb{E}}
+\newcommand{\bx}{\mathbf{x}}
+\newcommand{\bU}{\mathbf{U}}
 \newcommand{\cI}{\mathcal{I}}
 \newcommand{\cC}{\mathcal{C}}
 \newcommand{\defword}[1]{\textbf{\boldmath{#1}}}
@@ -195,7 +197,7 @@ Evolutionary game theory has been used to model interactions in populations of r
 However, complex interactions as modeled by general extensive-form games, has been researched 
 significantly less so than the normal-form ``one-shot'' games. 
 Recently, replicator dynamics have been adapted to extensive-form games represented in sequence form, leading to 
-a large reduction in computational resources. 
+a large reduction in computational resource requirements. 
 In this paper, we provide the first evidence of convergence to equilibrium strategies. 
 In additon, we generalize the sequence-form replictor dynamics to more than two players, and show that they can 
 find equilibrium points in general $n$-player games as well. 
@@ -237,7 +239,10 @@ Finally, we analyze the stability of the solutions and on equilibrium refinement
 %    in Entertainment Computing, which used data from real Poker games (saved as papers/Ponsen09An)
 %  - "What evolutionary game theory tells us about multiagent learning" AIJ article
 %    - possible James Wright's behavioral game theory paper
-%  - text book theory of learning in games, Fudenberg & Levin
+%  - text book theory of learning in games, Fudenberg & Levine
+
+% Multiagent Systems book has a theoreom that stable rest points correspond to trembling-hand perfect equilibria. 
+% --> same must be true here?
 
 \section{Introduction}
 
@@ -250,7 +255,7 @@ Finally, we analyze the stability of the solutions and on equilibrium refinement
 %\item Empirical evaulation in complex games
 %\end{itemize}
 
-Evolutionary game theory~\cite{MaynardSmith82,Gintis09} has been used to model and explain complex interactions in multiagent 
+Evolutionary game theory~\cite{MaynardSmith82,Gintis09} has been used to explain complex interactions in multiagent 
 systems such as population dynamics~\cite{HS98}, animalistic behavior in nature~\cite{MSP73}, and 
 multiagent learning~\cite{Tuyls07What,Tuyls03Selection}. The most popular and widely-studied population dynamic is the
 so-called {\it replicator dynamic}~\cite{TJ78}. Replicator dynamics quantify 
@@ -260,13 +265,17 @@ process leads to an evolutionary game that models population change.
 
 Multiagent systems that evolve under replicator dynamics have desirable properties and connections to classical game theory. 
 For example, fixed points of populations under the replicator dynamics correspond to a Nash equilibrium of the underlying normal 
-form game and stability of the system can be analyzed using theory of dynamical systems~\cite{Gintis09}. In addition, average payoff 
-of a population increases~\cite{HS98} and dominated strategies do not survive~\cite{Gintis09}. 
+form game and stability of the system can be analyzed using theory of dynamical systems~\cite{FudLev98,Gintis09}. 
+In addition, average payoff of a population increases~\cite{HS98} and dominated strategies do not survive~\cite{Gintis09}. 
 
 In the classic setup, the underlying stage game is a symmetric normal-form game. This limits the interaction
 among the agents since payoffs are determined from single decisions made by each agent. In general, the games played among agents 
-can be more complex, such as multi-step games such as extensive-form games. Evolutionary dynamics have been extended to 
-multi-stage models such as extensive games~\cite{Cressman03} and stochastic games~\cite{Hennes09State,Flesch13Evolutionary}, 
+can be more complex, such as multi-step games such as extensive-form games. 
+One option is to convert the extensive game to its equivalent normal-form, but this is only possible for very small games. 
+Another option is to heuristically abstract the strategy space~\cite{ponsen09b}, but 
+abstraction is lossy and may lead to loss of desired theoretical properties.
+Evolutionary dynamics have been extended to 
+multi-stage models such as extensive games~\cite{Cressman03} and stochastic games~\cite{Flesch13Evolutionary,Hennes09State}, 
 however the focus has been mainly on subgame-decomposable formalisms such as perfect information games and
 simultenous move games. In the fully general setting of imperfect information, the extensive-form game cannot be 
 decomposed into smaller subgames. 
@@ -274,18 +283,17 @@ decomposed into smaller subgames.
 Recently, efficient replicator dynamics have been proposed for the general case of extensive-form stage games with 
 imperfect information~\cite{Gatti13Efficient}, based on sequence-form representations~\cite{SequenceFormLPs}. 
 In their paper, the authors present discrete and continuous time sequence-form replicator dynamics (SFRD)
-that can be represent general extensive-form games with much less computational requirements than their equivalent
+that can be represent general extensive games with much less computational requirements than their 
 normal forms. 
 
-In this paper, we show convergence of SFRD to an equilibrium is guaranteed by relating the 
-dynamics to no-regret learning algorithms used to compute approximate equilibrium strategies in self-play. 
-We present the first evidence confirming the convergence of SFRD to a Nash equilibrium in two-player games, in both theory and practice.
+In this paper, we show convergence of SFRD to an equilibrium is guaranteed in two-player zero-sum games by relating the 
+dynamics to no-regret learning algorithms. % used to compute approximate equilibrium strategies in self-play. 
+We present the first evidence confirming the convergence of SFRD to a Nash equilibrium in two-player games, both in theory and practice.
 We extend SFRD to $n$-player games and show convergence properties in three-player and multiplayer Kuhn poker. 
-Finally, we analyze the stability of the solutions and show that stable rest points correspond to trembling-hand perfect equilibria.
+Finally, we analyze the stability of the solutions and confirm that stable rest points correspond to trembling-hand perfect equilibria.
+%TODO: make sure we actually do this!
 
-%, based on sequence-form representations~\cite{SequenceFormLPs}. 
-
-\section{Background}
+\section{Game Theory Background}
 
 %Evolutionary game theory. 
 %Replicator dynamics.
@@ -294,20 +302,23 @@ Finally, we analyze the stability of the solutions and show that stable rest poi
 %Kuhn Poker. 
 
 In this section we define the relevant game-theoretic terminology that forms the basis
-of our analysis. The notation used here is based on~\cite{OsbRub94}. 
+of our analysis. The notation used here is based on~\cite{OsbRub94}. For a comprehensive introduction and
+survey of the fundamental topics, see~\cite{ShoLB08,Weiss13}.
 
-A normal-form game is a one where each agent $i \in N = \{ 1, \ldots, n \}$ 
-chooses a single \defword{pure strategy} $s_i \in S_i$ simultaneously, where $N$ and $S_i$ are assumed to 
-be finite. The payoff to each agent when strategy profile $s$ is employed is denoted $u_i(s)$, where $s \in S$, and 
-$S = S_1 \times S_2 \times \ldots \times S_n$ is the space of pure strategy profiles. 
-When $|N| = 2$ these are called {\it matrix games} since the payoffs $u_i(s)$ can be represented as a matrix. 
-A normal-form game is \defword{symmetric} if and only if $S_i = S_j$ for $i \not= j$. Let $\Sigma_i$ denote the set of 
-all probability distributions over $S_i$ and $\sigma_i \in \Sigma_i$ a \defword{mixed strategy} for player $i$. 
-Then, the expected payoff for player $i$ is denoted $u_i(\sigma) = \bE_{s \sim \sigma}[u(s)] = \sum_{s \in S} \sigma(s) u(s)$
-where $\sigma$ is a mixed strategy profile and $\sigma(s)$ is the probability of playing $s$. 
+% do I need this? don't think so
+%A normal-form game is a one where each agent $i \in N = \{ 1, \ldots, n \}$ 
+%chooses a single \defword{pure strategy} $s_i \in S_i$ simultaneously, where $N$ and $S_i$ are assumed to 
+%be finite. The payoff to each agent when strategy profile $s$ is employed is denoted $u_i(s)$, where $s \in S$, and 
+%$S = S_1 \times S_2 \times \ldots \times S_n$ is the space of pure strategy profiles. 
+%When $|N| = 2$ these are called {\it matrix games} since the payoffs $u_i(s)$ can be represented as a matrix. 
+%A normal-form game is \defword{symmetric} if and only if $S_i = S_j$ for $i \not= j$. Let $\Sigma_i$ denote the set of 
+%all probability distributions over $S_i$ and $\sigma_i \in \Sigma_i$ a \defword{mixed strategy} for player $i$. 
+%Then, the expected payoff for player $i$ is denoted $u_i(\sigma) = \bE_{s \sim \sigma}[u(s)] = \sum_{s \in S} \sigma(s) u(s)$
+%where $\sigma$ is a mixed profile and $\sigma(s)$ is the probability of playing $s$. 
 
-An extensive-form game models sequential decision making. In this case, there are \defword{histories} $h \in H$ which represent
-sequences of \defword{actions}. A history $z \in Z$, where $Z \subseteq H$, is called a \defword{terminal history} marking the end of the 
+An extensive-form game models sequential decision making. There are a number of decision-making agents called \defword{players} 
+$i \in N = \{ 1, \ldots, n \}$. Each player chooses an \defword{action} leading to a sequence of actions called \defword{histories} $h \in H$. 
+A history $z \in Z$, where $Z \subseteq H$, is called a \defword{terminal history} marking the end of the 
 game. At each terminal history $z$ there is a payoff $u_i(z)$ to player $i$. At each nonterminal history $h$, there is a single 
 current player to act, $P: H \backslash Z \rightarrow N \cup \{ c \}$ where $c$ is a special player called \defword{chance}
 (sometimes also called nature) that plays with a fixed stochastic strategy. For example, chance is used to represent die rolls 
@@ -320,29 +331,121 @@ $I \in \cI_i$ that belongs to player $i$ represents a state of the game with res
 Formally, $I$ is a set of histories that a player cannot distinguish (due information hidden from that player). For all 
 $h,h' \in I$, $A(h) = A(h')$ and $P(h) = P(h')$; hence sometimes we use $A(I)$ and $P(I)$. 
 
-We also define the set of (information set, action) pairs for one player to be
-$\cC_i = \{ (I,a) \mid I \in \cI_i, a \in A(I) \}$.
+We also define the \defword{choice set} of (information set, action) pairs for one player to be
+$Q_i = \{ (I,a) \mid I \in \cI_i, a \in A(I) \}$.
 %and $I(h)$ as the information set containing the nonterminal history $h$. 
 For a history $h \in H$, define
-$X_i(h) = ((I,a), (I', a'), (I'', a''), \cdots)$ to be the sequence of player $i$'s (information set,
-action) pairs that were encountered and taken to reach $h$ in the same order as they are encountered
-and taken in $h$. An extensive-form game has \defword{perfect recall} if
+$X_i(h) = ((I,a), (I', a'), \cdots)$ to be the sequence of player $i$'s (information set,
+action) pairs (choices) that were encountered and taken to reach $h$ in the same order as they are encountered
+and taken along $h$. In this paper, every extensive-form game has \defword{perfect recall}, which means
 $\forall i \in N, \forall I \in \cI_i : h, h' \in I \Rightarrow X_i(h) = X_i(h')$. Intuitively,
 this means that player $i$ does not forget any information that they discovered during their play
-up to $h$.
+up to $h$. 
+Denote $succ_i(I,a)$ as the set of immediate successor choice, that is 
+all $(I',a')$ such that $X_i(h') = X_i(h) \cdot (I',a')$ where $h \in I, h' \in I'$.
 
 %equilibrium definitions
+A \defword{behavioral strategy} for player $i$ is a mapping from information sets $I \in \cI_i$
+to a probability distribution over the actions $A_i(I)$, denoted by $\sigma_i(I)$. 
+If every distribution in the range of this mapping assigns all of its weight on a single action, 
+then the strategy is called \defword{pure}. 
+Given a profile $\sigma$, we denote the probability of reaching a terminal state $z$ under $\sigma$ as 
+$\pi^\sigma(z) = \prod_{i \in N} \pi_i(z)$, where each $\pi_i(z)$ is a product of probabilities of the actions taken 
+by player $i$ in $X_i(z)$. Define $\Sigma_i$ to be the set of behavioral strategies for player $i$. 
+As is convention, $\sigma_{-i}$ and $\pi_{-i}^\sigma$ refer to player $i's$ opponents' strategies and products (including chance's).
+An \defword{$\epsilon$-Nash equilibrium} profile is a set of $\sigma_i$ for $i \in N$ such that the benefit to switching to some 
+alternative $\sigma_i'$,
+%that are the arguments of maximization and minimization in
+\begin{equation}\label{eq:ne}
+  \max_{\sigma_i' \in \Sigma_i} \left\{ \sum_{z \in Z} \pi_i^{\sigma'}(z) \pi_{-i}^\sigma(z) u_i(z) \right\} - u_i(z) \le \epsilon_i
+\end{equation}
+holds for all players $i$ and $\epsilon = \max_{i \in N} \epsilon_i$. When $\epsilon = 0$, the profile is simply called a Nash equilibrium. 
 When $|N| = 2$ and $u_1(z) = -u_2(z)$ for all $z \in Z$, 
-then the game is a two-player zero-sum game. Two-player zero-sum games form an important subclass of extensive-form games due to
-worst-case guarantees 
+then the game is a two-player zero-sum game. Two-player zero-sum games form an important subset of extensive-form games due to their
+worst-case guarantees: different equilibrium strategies result in the same expected payoff against any arbitrary opponent equilibrium strategy.
 
 \subsection{Sequence-Form Replicator Dynamics}
 
+% Explain sequence form
+% explain replicator dynamics
+
+The sequence-form representation was introduced by Koller, Megiddo and von Stengel as an efficient way to construct
+linear programs and complementarity problems for solving extensive-form games~\cite{SequenceFormLPs}. Rather than using a
+game's equivalent normal-form representation, the sequence-form imposes constraints compactly by using the game tree's structure, 
+resulting in an exponentially smaller optimization problem.
+A \defword{realization plan}, denoted $\bx_i$, is a mapping from each $q \in Q_i$ to a \defword{realization weight} 
+$x_i(q) \in [0,1]$ under the constraints that each nonterminal $x_i(q) = \sum_{q' \in succ_i(q)} x_i(q')$ and root weight $x_i(\emptyset) = 1$. 
+
+Sequence-form replicator dynamics (SFRD) were recently introduced by Gatti, Pannozzo, and Restelli~\cite{Gatti13Efficient}. 
+Denote the realization profile $\bx = (\bx_1, \ldots, \bx_n)$. 
+In the common special case of two players, each realization plan is represented as a vector along with a sparse payoff matrix $\bU_i$, 
+and so the expected utility is simply $u_i(\bx_1, \bx_2) = \bx_1 \bU_i \bx_2$. 
+In general, the expected utility to player $i$ is  
+\[
+u_i(\bx) = \sum_{q_1 \in Q_1, \cdots, q_n \in Q_n} \prod_{k=1}^n x_k(q_k) u_i(q_1, \ldots, q_n),
+\]
+where $u_i(q_1, \ldots, q_n) = 0$ if the combined choices are inconsistent or do not lead to a leaf, otherwise 
+equals the utility to player $i$ given these choices multiplied by the probability of chance realizing the outcomes 
+consistent with these choices. 
+
+Discrete-time SFRD starts with an arbitrary strategy $\bx_i$ and, at each time step $t$, for all players $i$ and all 
+choices $q \in Q_i$, updates the weights using
+\begin{equation}
+x(q_i,t+1) \leftarrow x(q_i,t) \cdot \frac{u_i(\bx_{i \rightarrow g_{q_i}})}{u_i(\bx)},
+\end{equation}
+where $\bx_{i \rightarrow g_q}$ corresponds to the realization profile $\bx$ except player $i$ uses $g_q(\bx_i)$ instead of $\bx_i$. 
+Here, $g_q(\bx_i)$ returns a transformed realization plan that is explained below. 
+Continuous-time SFRD is described by the differential equation for all players $i$ and all $q \in Q_i$:
+\begin{equation}
+\dot{x}(q_i,t) = x(q_i,t) \cdot u_i(\bx_{i \rightarrow \Delta g_{q_i}}),
+\end{equation}
+where $\bx_{i \rightarrow \Delta g_q}$ corresponds to the profile $\bx$ except player $i$ uses $g_q(\bx_i) - \bx_i$. 
+
+The function $g_q(\bx_i)$ modifies $\bx_i$ in the following way. 
+For for all pairs $(I,a) \in X_i(q)$: the action $a$ is always taken (realization weight
+set to 1) and actions $b \in A(I), b \not= a$ never taken (realization weight set to 0 and all child weights of $(I,b)$ also set to 0). 
+Every other $q' \in Q_i$ that is not directly off the path of $X_i(q)$ is renormalized given new parent weights.
+For details, see \cite[Algorithm 1]{Gatti13Efficient}. In essence, $g_q(\bx_i)$ is a projection of $\bx_i$ to its purest form based on $q$ 
+while still retaining the sequence-form constraints. 
+
+An important result is that SFRD is realization-equivalent to the standard replicator dynamics. Therefore, applying SFRD is identical 
+to applying standard replicator dynamics to the normal-form equivalent game. However, SFRD requires exponentially less space to represent
+the game. 
+
 \subsection{Kuhn Poker}
+
+% refer to Hoen et. al, abou risk, rich gibson
+
+Kuhn poker is a simplified poker game originally proposed by Harold W. Kuhn~\cite{Kuhn50}. 
+Kuhn poker has been analyzed analytically~\cite{hoehn05} and used as a testbed in studies in 
+algorithms and multiagent systems~\cite{AbouRisk10,Szafron13Kuhn}.  
+
+Generalized $n$-player Kuhn poker, $KP(n)$ consists of a deck with $n+1$ cards $\{ 1, 2, \cdots, n, n+1 \}$. 
+Every player starts with 2 chips. At the start of the game, each player antes one of their chips placing it
+into a central pot of $p = n$ chips. 
+Then, chance deals one card to each player. 
+The game starts with Player 1 and proceeds sequentially to the next player that is not eliminated. 
+A player may bet (if they have a chip) or pass. 
+To bet, a player puts the chip into the pot: $p \leftarrow p + 1$. 
+A player can fold by passing when $n < p < 2r$ where $r$ is the number of players that have not been eliminated. 
+If they do so, they are eliminated and receive a payoff of -1 for the chip lost. 
+The game proceeds until either (i) all but one player has folded, or (ii) $p = n$ or $p = 2r$ for an entire round 
+among the remaining players. In the former case, the remaining player wins the pot. In the latter case, the 
+remaining player with the highest-valued card wins the pot. In all cases, a player's payoff is the number of chips
+they end up with minus their 2 starting chips. 
+
+Kuhn's original poker used $n = 2$. The form of every equilibrium strategy for $KP(2)$ was derived analytically 
+in~\cite{hoehn05} and used in a number of studies. An $\epsilon$-equilibrium, with $\epsilon = 0.0044563$ was 
+found experimentally using counterfactual regret minimization in $KP(3)$~\cite{AbouRisk10}. 
+Recently, a family of parameterized eqilibrium profiles were analytically derived for $KP(3)$~\cite{Szafron13Kuhn}.
+While replicator dynamics have been applied to abstractions of complex Poker games~\cite{ponsen09b},
+to the best of our knowledge $KP(n > 3)$ has not been analyzed. 
+
+%\subsection{Counterfactual Regret Minimization}
 
 \section{Convergence Analysis}
 
-\section{The Multiplayer Case}
+\section{Experiments}
 
 \section{Conclusion}
 
