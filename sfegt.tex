@@ -36,14 +36,43 @@
 
 % This is the document class for full camera ready papers and extended abstracts repsectively 
 
+\documentclass{aamas2014}
+
+\usepackage{pdfsync}
+\usepackage{comment}
+\usepackage{amsmath}
+\usepackage{amssymb}
+%\usepackage{amsthm}
+\usepackage{calc}
+\usepackage{color}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{xspace}
+\usepackage[caption=false]{subfig}
+
+\newcommand{\argmin}{\operatornamewithlimits{argmin}}
+\newcommand{\argmax}{\operatornamewithlimits{argmax}}
 \newcommand{\bE}{\mathbb{E}}
 \newcommand{\bx}{\mathbf{x}}
+\newcommand{\bg}{\mathbf{g}}
+\newcommand{\bu}{\mathbf{u}}
 \newcommand{\bU}{\mathbf{U}}
 \newcommand{\cI}{\mathcal{I}}
 \newcommand{\cC}{\mathcal{C}}
 \newcommand{\defword}[1]{\textbf{\boldmath{#1}}}
-
-\documentclass{aamas2014}
+\newcommand{\ie}{{\it i.e.}}
+\newcommand{\eg}{{\it e.g.}}
+\newtheorem{definition}{Definition}
+\newtheorem{fact}{Fact}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newcommand{\Proof}{{\noindent\bf Proof. }}
+\newcommand{\citejustyear}[1]{\cite{#1}}
+\newcommand{\Qed}{$\blacksquare$}
+\newcommand{\abs}[1]{\left|#1\right|}
+\newcommand{\todo}[1]{{\color{red}{\bf #1}}}
 
 % if you are using PDF LaTex and you cannot find a way for producing
 % letter, the following explicit settings may help
@@ -332,7 +361,8 @@ Formally, $I$ is a set of histories that a player cannot distinguish (due inform
 $h,h' \in I$, $A(h) = A(h')$ and $P(h) = P(h')$; hence sometimes we use $A(I)$ and $P(I)$. 
 
 We also define the \defword{choice set} of (information set, action) pairs for one player to be
-$Q_i = \{ (I,a) \mid I \in \cI_i, a \in A(I) \}$.
+$Q_i = \{ (I,a) \mid I \in \cI_i, a \in A(I) \} \cup \{ q_{\emptyset} \}$, where $q_{\emptyset}$ is
+the empty/root choice. 
 %and $I(h)$ as the information set containing the nonterminal history $h$. 
 For a history $h \in H$, define
 $X_i(h) = ((I,a), (I', a'), \cdots)$ to be the sequence of player $i$'s (information set,
@@ -341,7 +371,7 @@ and taken along $h$. In this paper, every extensive-form game has \defword{perfe
 $\forall i \in N, \forall I \in \cI_i : h, h' \in I \Rightarrow X_i(h) = X_i(h')$. Intuitively,
 this means that player $i$ does not forget any information that they discovered during their play
 up to $h$. 
-Denote $succ_i(I,a)$ as the set of immediate successor choice, that is 
+Denote $succ_i(I,a)$ the set of immediate successor choices, that is 
 all $(I',a')$ such that $X_i(h') = X_i(h) \cdot (I',a')$ where $h \in I, h' \in I'$.
 
 %equilibrium definitions
@@ -369,44 +399,59 @@ worst-case guarantees: different equilibrium strategies result in the same expec
 % Explain sequence form
 % explain replicator dynamics
 
-The sequence-form representation was introduced by Koller, Megiddo and von Stengel as an efficient way to construct
+The sequence-form was introduced by Koller, Megiddo and von Stengel as an efficient way to construct
 linear programs and complementarity problems for solving extensive-form games~\cite{SequenceFormLPs}. Rather than using a
 game's equivalent normal-form representation, the sequence-form imposes constraints compactly by using the game tree's structure, 
 resulting in an exponentially smaller optimization problem.
-A \defword{realization plan}, denoted $\bx_i$, is a mapping from each $q \in Q_i$ to a \defword{realization weight} 
-$x_i(q) \in [0,1]$ under the constraints that each nonterminal $x_i(q) = \sum_{q' \in succ_i(q)} x_i(q')$ and root weight $x_i(\emptyset) = 1$. 
+Define a \defword{realization plan}, denoted $\bx_i$, as a mapping from each $q \in Q_i$ to a \defword{realization weight} 
+$x_i(q) \in [0,1]$ under the constraints that each nonterminal $x_i(q) = \sum_{q' \in succ_i(q)} x_i(q')$ and root weight $x_i(q_{\emptyset}) = 1$. 
+Every realization plan has an equivalent behavioral strategy due to perfect recall. 
 
 Sequence-form replicator dynamics (SFRD) were recently introduced by Gatti, Pannozzo, and Restelli~\cite{Gatti13Efficient}. 
 Denote the realization profile $\bx = (\bx_1, \ldots, \bx_n)$. 
 In the common special case of two players, each realization plan is represented as a vector along with a sparse payoff matrix $\bU_i$, 
 and so the expected utility is simply $u_i(\bx_1, \bx_2) = \bx_1 \bU_i \bx_2$. 
 In general, the expected utility to player $i$ is  
-\[
+\begin{equation}
+\label{eq:util}
 u_i(\bx) = \sum_{q_1 \in Q_1, \cdots, q_n \in Q_n} \prod_{k=1}^n x_k(q_k) u_i(q_1, \ldots, q_n),
-\]
+\end{equation}
 where $u_i(q_1, \ldots, q_n) = 0$ if the combined choices are inconsistent or do not lead to a leaf, otherwise 
 equals the utility to player $i$ given these choices multiplied by the probability of chance realizing the outcomes 
 consistent with these choices. 
 
-Discrete-time SFRD starts with an arbitrary strategy $\bx_i$ and, at each time step $t$, for all players $i$ and all 
+Discrete-time SFRD starts with an arbitrary strategy $\bx_i$ and, at each time step $t$, for all players $i \in N$ and all 
 choices $q \in Q_i$, updates the weights using
 \begin{equation}
-x(q_i,t+1) \leftarrow x(q_i,t) \cdot \frac{u_i(\bx_{i \rightarrow g_{q_i}})}{u_i(\bx)},
+\label{eq:dt-sfrd}
+x_i(q,t+1) = x_i(q,t) \cdot \frac{u_i(\bx_{i \rightarrow g_{q}})}{u_i(\bx)},
 \end{equation}
 where $\bx_{i \rightarrow g_q}$ corresponds to the realization profile $\bx$ except player $i$ uses $g_q(\bx_i)$ instead of $\bx_i$. 
 Here, $g_q(\bx_i)$ returns a transformed realization plan that is explained below. 
-Continuous-time SFRD is described by the differential equation for all players $i$ and all $q \in Q_i$:
+Continuous-time SFRD is described by the differential equation for all players $i \in N$ and all $q \in Q_i$:
 \begin{equation}
-\dot{x}(q_i,t) = x(q_i,t) \cdot u_i(\bx_{i \rightarrow \Delta g_{q_i}}),
+\label{eq:ct-sfrd}
+\dot{x}_i(q,t) = x_i(q,t) \cdot u_i(\bx_{i \rightarrow \Delta g_{q}}),
 \end{equation}
 where $\bx_{i \rightarrow \Delta g_q}$ corresponds to the profile $\bx$ except player $i$ uses $g_q(\bx_i) - \bx_i$. 
 
 The function $g_q(\bx_i)$ modifies $\bx_i$ in the following way. 
 For for all pairs $(I,a) \in X_i(q)$: the action $a$ is always taken (realization weight
 set to 1) and actions $b \in A(I), b \not= a$ never taken (realization weight set to 0 and all child weights of $(I,b)$ also set to 0). 
-Every other $q' \in Q_i$ that is not directly off the path of $X_i(q)$ is renormalized given new parent weights.
-For details, see \cite[Algorithm 1]{Gatti13Efficient}. In essence, $g_q(\bx_i)$ is a projection of $\bx_i$ to its purest form based on $q$ 
+Every other $q' \in Q_i$ that is not directly off the path of $X_i(q)$ (due to actions taken by opponents or being a longer path than $X_i(q)$),
+$x_i(q')$ is renormalized. 
+In essence, $g_q(\bx_i)$ is a projection of $\bx_i$ to its purest form based on $q$ 
 while still retaining the sequence-form constraints. 
+Specifically, for a given element $q'$, 
+\begin{equation}
+\label{eq:gdef}
+g_q(\bx_i, q') = \left\{ \begin{array}{ll}
+  1                                                   & \mbox{if $q' \in X_i(q)$}, \\
+\frac{x_i(q')}{\mbox{Ancestor}(q, q')}    & \mbox{if $X_i(q) \sqsubseteq X_i(q')$}, \\  
+  0                                                   & \mbox{otherwise}, \end{array} \right.
+\end{equation}
+where Ancestor$(q, q')$ is $x_i(q'')$ and $q''$ is the last choice in the overlapping subsequence  
+$X_i(q) \cap X_i(q')$. For some examples, see \cite{Gatti13Efficient}. 
 
 An important result is that SFRD is realization-equivalent to the standard replicator dynamics. Therefore, applying SFRD is identical 
 to applying standard replicator dynamics to the normal-form equivalent game. However, SFRD requires exponentially less space to represent
@@ -417,49 +462,116 @@ the game.
 % refer to Hoen et. al, abou risk, rich gibson
 
 Kuhn poker is a simplified poker game originally proposed by Harold W. Kuhn~\cite{Kuhn50}. 
-Kuhn poker has been analyzed analytically~\cite{hoehn05} and used as a testbed in studies in 
-algorithms and multiagent systems~\cite{AbouRisk10,Szafron13Kuhn}.  
+Kuhn poker has been analyzed analytically by Kuhn and used as a testbed in studies in 
+algorithms and multiagent systems~\cite{hoehn05,AbouRisk10,Szafron13Kuhn}.  
 
-Generalized $n$-player Kuhn poker, $KP(n)$ consists of a deck with $n+1$ cards $\{ 1, 2, \cdots, n, n+1 \}$. 
+Generalized $n$-player Kuhn poker, KP$(n)$ consists of a deck with $n+1$ cards $\{ 1, 2, \cdots, n, n+1 \}$. 
 Every player starts with 2 chips. At the start of the game, each player antes one of their chips placing it
 into a central pot of $p = n$ chips. 
 Then, chance deals one card to each player. 
 The game starts with Player 1 and proceeds sequentially to the next player that is not eliminated. 
 A player may bet (if they have a chip) or pass. 
 To bet, a player puts the chip into the pot: $p \leftarrow p + 1$. 
-A player can fold by passing when $n < p < 2r$ where $r$ is the number of players that have not been eliminated. 
-If they do so, they are eliminated and receive a payoff of -1 for the chip lost. 
-The game proceeds until either (i) all but one player has folded, or (ii) $p = n$ or $p = 2r$ for an entire round 
-among the remaining players. In the former case, the remaining player wins the pot. In the latter case, the 
+A player can fold by passing when $n < p < 2r$ where $r$ is the number of remaining players, \ie~players that have not been eliminated. 
+If a player folds, they are eliminated and receive a payoff of -1 for the chip lost. 
+The game proceeds until either (i) all but one player has folded, or (ii) $p = n$ and everyone has passed or all the 
+remaining players have run out of chips. 
+In the former case, the remaining player wins the pot. In the latter case, the 
 remaining player with the highest-valued card wins the pot. In all cases, a player's payoff is the number of chips
 they end up with minus their 2 starting chips. 
 
-Kuhn's original poker used $n = 2$. The form of every equilibrium strategy for $KP(2)$ was derived analytically 
-in~\cite{hoehn05} and used in a number of studies. An $\epsilon$-equilibrium, with $\epsilon = 0.0044563$ was 
-found experimentally using counterfactual regret minimization in $KP(3)$~\cite{AbouRisk10}. 
-Recently, a family of parameterized eqilibrium profiles were analytically derived for $KP(3)$~\cite{Szafron13Kuhn}.
+Kuhn's original game used $n = 2$. The form of every equilibrium strategy for KP$(2)$ was derived analytically
+by Kuhn and and used in a number of studies, \eg~\cite{hoehn05}. An $\epsilon$-equilibrium, with $\epsilon = 0.0044563$ was 
+found experimentally using counterfactual regret minimization in KP$(3)$~\cite{AbouRisk10}. 
+Recently, a family of parameterized eqilibrium profiles were analytically derived for KP$(3)$~\cite{Szafron13Kuhn}.
 While replicator dynamics have been applied to abstractions of complex Poker games~\cite{ponsen09b},
-to the best of our knowledge $KP(n > 3)$ has not been analyzed. 
+to the best of our knowledge KP$(n), n > 3$ has not yet been analyzed.  
 
+% might need this
 %\subsection{Counterfactual Regret Minimization}
 
 \section{Further Developments of SFRD}
 
 In this section, we describe new developments and analyses of sequence-form replicator dynamics. 
 First, we show that the extension to $n > 2$ players preserves the theoretical properties proved in the original work. 
-Second, we show that discrete-time SFRD minimizes a form of counterfactual regret and hence approaches a Nash equilibrium profile 
-over time in two-player zero-sum games. 
+Second, we show that discrete-time SFRD minimizes a form of counterfactual regret and hence the average strategy 
+approaches a Nash equilibrium profile over time in two-player zero-sum games. 
 
 % Hmm, can I do this?
 % - Thirdly, we discuss the stability of the solution and its relationship to extensive-form trembling-hand perfect equilibrium.
 
 \subsection{Extension to More Than Two Players}
 
+In this subsection, we show that general $n$-player SFRD maintains sequence-form constraints and is 
+realization equivalent to $n$-player normal-form replicator dynamics. Overall, the analysis here follows~\cite{Gatti13Efficient}
+with some adjustments. 
+
+\begin{definition}
+A choice $q \in Q_i$ for player $i$ is \defword{reachable} under $\bx_i$ if and only if $x_i(q) > 0$. 
+\end{definition}
+
+We will restrict our analysis to reachable choices of $\bx_i$. The behavior for unreachable parts of $\bx_i$ is 
+irrelevant since the payoff is unaffected over all possible opponent profiles. 
+
+\begin{theorem}
+Given a valid realization profile $\bx(t) = $\\ $(\bx_1(t), \ldots, \bx_n(t))$, a new $\bx(t+1)$ produced by
+Equation~\ref{eq:dt-sfrd} satisfies the sequence-form constraints. 
+\end{theorem}
+\begin{proof}
+First, observe $x_i(q',t) = 0 \Rightarrow x_i(q',t+1) = 0$ for all reachable choices $q' \in Q_i$. 
+Similarly,  $g_{q_{\emptyset}}(\bx_i, q') = \bx_i(q')$ since $q_{\emptyset}$ is a subsequence of every choice 
+$q \in Q_i$. So the root weight $x_i(q_{\emptyset}, t+1) = x_i(q_{\emptyset},t) = 1$.   
+We will prove by induction that 
+\[ x_i(q,t+1) = \sum_{q' \in succ_i(q)} x_i(q',t+1). \]
+We assume that the contraints hold at time $t$. 
+Applying Eq.~\ref{eq:dt-sfrd} and multiplying each side by $u_i(\bx)$ gives
+\[
+x_i(q,t) u_i(\bx_{i \rightarrow g_q}, t) = \sum_{q' \in succ_i(q)} x_i(q',t) u_i(\bx_{i \rightarrow g_{q'}},t) 
+\]
+%Let $Q = Q_1 \times \cdots \times Q_n$. 
+Recalling that the opponent strategies are fixed, we 
+we rewrite the utility $u_i(\bx_{i \rightarrow g_q}, t)$ using Equation~\ref{eq:util} as a dot product of 
+components belonging to $i$ and to the opponents $-i$: 
+\begin{eqnarray*}
+%x & y & z \\ 
+u_i(\bx_i) & = & ~~g_q(\bx_i, q_1') \cdot u_i(q_1', \ldots, q_n') \prod_{q_k', k \not= i} x_k(q_k') \\
+           &   & +~g_q(\bx_i, q_1'') \cdot u_i(q_1'', \ldots, q_n'') \prod_{q_k'', k \not= i} x_k(q_k'') \\
+           &   & +~g_q(\bx_i, q_1''') \cdot u_i(q_1''', \ldots, q_n''') \prod_{q_k''', k \not= i} x_k(q_k''') \\
+           &   & ~~\cdots \\
+           & = & ~~\bg_q(\bx_i) \cdot \bu(\bx_{-i}),
+\end{eqnarray*}
+and substituting from above we have 
+\[x_i(q,t)(\bg_q(\bx_i) \cdot \bu(\bx_{-i})) = \sum_{q' \in succ_i(q)} x_i(q',t) (\bg_{q'}(\bx_i) \cdot \bu(\bx_{-i})). \]
+Using distributivity of dot product, this can be rearranged:
+\[ \bu(\bx_{-i}) \cdot (x_i(q,t)(\bg_q(\bx_i)) = \bu(\bx_{-i})~\cdot\sum_{q' \in succ_i(q)} x_i(q',t) \bg_{q'}(\bx_i). \]
+The vectors on the left side of the dot products are equal.
+Therefore, it suffices to show the vectors on the right side are also equal, which is similar to the case of two-players.   
+For choices $q''$ where $X_i(q'')$ is inconsistent with $X_i(q)$, the parent and child weights are all set to $0$, so these 
+elements are equal by the induction assumption. 
+Similarly, for choices $q''$ where $q'' \in X_i(q)$, $g_q(\bx_i, q'') = g_{q'}(\bx_i, q'') = 1$, and these elements are also 
+equal by the induction assumption. 
+The remaining elements are equal by Eq.~\ref{eq:gdef} and \cite[Lemma 6]{Gatti13Efficient}. 
+\end{proof}
+
+\todo{realization equivalence}
+
 \subsection{Link to No-Regret Learning in Self-Play}
+
+In this section we show that discrete-time SFRD (equation~\ref{eq:dt-sfrd}) corresponds to a form of counterfactual 
+regret minimization. As a result, we show that in two-player zero-sum games, convergence to an equilbrium is guaranteed, 
+even if the equilibrium point is not stable. We show convergence in practice in the general case in 
+Section~\ref{sec:exp}. As in~\cite{Klos10Evolutionary}, the Polynomial Weights (PW) algorithm is; 
+however, unlike \cite{Klos10Evolutionary} we show that SFRD corresponds to regret minimization rather than analyze the 
+evolutionary dynamics of PW. In particular, SFRD corresponds to counterfactual regret minimization where PW replaces 
+regret-matching as the underlying no-regret learner at each information set. 
+
+Polynomial Weights~\cite{Blum07} is an generalization of the Randomized Weighted Majority algorithm~\cite{Littlestone94WM}.
+
 
 %\subsection{Stability and Trembling-Hand Perfection}
 
 \section{Experiments}
+\label{sec:exp}
 
 \begin{itemize}
 \item first evidence of convergence in 2P Kuhn
