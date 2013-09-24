@@ -316,11 +316,15 @@ In their paper, the authors present discrete and continuous time sequence-form r
 that can be represent general extensive games with much less computational requirements than their 
 normal forms. 
 
-In this paper, we show convergence of SFRD to an equilibrium is guaranteed in two-player zero-sum games by relating the 
-dynamics to no-regret learning algorithms. % used to compute approximate equilibrium strategies in self-play. 
-We present the first evidence confirming the convergence of SFRD to a Nash equilibrium in two-player games, both in theory and practice.
-We extend SFRD to $n$-player games and show convergence properties in three-player and multiplayer Kuhn poker. 
-Finally, we analyze the stability of the solutions and confirm that stable rest points correspond to trembling-hand perfect equilibria.
+In this paper, we first extend SFRD to $n$-player games and show that properties are conserved with more than two players. 
+To the best of our knowledge, this work constitutes the first use of the sequence-form representation for games 
+with $n > 2$ players. 
+We show that in two-player zero-sum games, SFRD corresponds to no-regret learning and hence convergence to an 
+equilibrium is guaranteed, even if equilibrium points are not stable. 
+We present the first empirical evaluation of SFRD and, in particular, the first evidence confirming the convergence 
+of SFRD to a Nash equilibrium in two-player games, both in theory (for two player zero-sum) and practice (for $n$ players).
+Finally, we empirically evaluate the stability of the solutions and show that stable rest points correspond to 
+trembling-hand perfect equilibria.
 %TODO: make sure we actually do this!
 
 \section{Game Theory Background}
@@ -492,7 +496,7 @@ to the best of our knowledge KP$(n), n > 3$ has not yet been analyzed.
 % might need this
 %\subsection{Counterfactual Regret Minimization}
 
-\section{Further Developments of SFRD}
+\section{New Developments of SFRD}
 
 In this section, we describe new developments and analyses of sequence-form replicator dynamics. 
 First, we show that the extension to $n > 2$ players preserves the theoretical properties proved in the original work. 
@@ -544,7 +548,7 @@ u_i(\bx_i) & = & ~~g_q(\bx_i, q_1') \cdot u_i(q_1', \ldots, q_n') \prod_{q_k', k
 \end{eqnarray*}
 and substituting from above we have 
 \[x_i(q,t)(\bg_q(\bx_i) \cdot \bu(\bx_{-i})) = \sum_{q' \in succ_i(q)} x_i(q',t) (\bg_{q'}(\bx_i) \cdot \bu(\bx_{-i})), \]
-which by distributivity and commutativity, rearranges to
+which, by distributivity and commutativity, rearranges to
 \[ \bu(\bx_{-i}) \cdot (x_i(q,t)(\bg_q(\bx_i)) = \bu(\bx_{-i})~\cdot\sum_{q' \in succ_i(q)} x_i(q',t) \bg_{q'}(\bx_i). \]
 The vectors on the left side of the dot products are equal.
 Therefore, it suffices to show the vectors on the right side are also equal, which is similar to the case of two players.   
@@ -564,7 +568,7 @@ $\forall h \in H, \forall \sigma_{-i} \in \Sigma_{-i}, \pi^{\sigma}_i(h) = \pi^{
 In other words, every history is reachable with the same probability given an arbitrary fixed opponent profile. 
 Due to perfect recall, every mixed strategy has an equivalent behavioral strategy~\cite{Kuhn53}. 
 Similarly, every mixed strategy has an equivalent realization plan and every realization plan has 
-and equivalent behavioral strategy~\cite{SequenceFormLPs}. Therefore, the definition can be used for these 
+an equivalent behavioral strategy~\cite{SequenceFormLPs}. Therefore, the definition can be used for these 
 other forms by reasoning about their equivalent behavioral forms. 
 
 An important result from~\cite{Gatti13Efficient} is that strategies produced by SFRD are realization equivalent 
@@ -579,19 +583,19 @@ Let $\bx(t)$ be a realization profile and $\bx(t+1)$ a realization profile in $G
 Equation~\ref{eq:dt-sfrd}. Then for all players $i \in N$, $\bx(t+1)$ and $\sigma(t+1)$ are realization equivalent.
 \end{theorem}
 \begin{proof}
-Let $s_i \in S_i$ be a pure strategy for player $i$. 
-For $q' \in succ_i(q)$, $x_i(q', t) = \sum_{s_i \in S_i, q \in s_i} \sigma(s_i)$. 
+Let $s_i \in S_i$ be a pure strategy for player $i$, and $S_i(q) = \{ s_i | s_i \in S_i, q \in s_i \}$.
+For $q' \in succ_i(q)$, $x_i(q', t) = \sum_{s_i \in S_i(q)} \sigma(s_i)$. 
 We need to show that this is also true at time $t+1$. By applying Equation~\ref{eq:dt-sfrd} and standard
 replicator dynamics, this becomes
 \[
   x_i(q',t) \frac{u_i(\bx_{i \rightarrow g_{q'}})}{u(\bx)} 
-= \sum_{s_i \in S_i, q \in s_i} \left( \sigma(s_i,t) \frac{u_i(\sigma_{i \rightarrow s_i})}{u(\sigma)} \right)
+= \sum_{s_i \in S_i(q)} \left( \sigma(s_i,t) \frac{u_i(\sigma_{i \rightarrow s_i})}{u(\sigma)} \right)
 \]
 We know that $u(\bx) = u(\sigma)$ by the statement of the theorem, so we can remove these denominators.
-Similar to above, the utilities can be decomposed into a dot product of vectors and re-arranged, to give:
+Then, similarly to above the utilities can be decomposed into a dot product of vectors and re-arranged, leading to
 \[
   \bu(\bx_{-i}) \cdot (x_i(q',t)(\bg_{q'}(\bx_i)) 
-= \bu(\sigma_{-i})~\cdot \sum_{s_i \in S_i, q \in s_i} \sigma(s_i,t) \boldsymbol\sigma_{i \rightarrow s_i}.
+= \bu(\sigma_{-i})~\cdot \sum_{s_i \in S_i(q)} \sigma(s_i,t) \boldsymbol\sigma_{i \rightarrow s_i}.
 \]
 \noindent The vectors on left are realization equivalent by the statement of the theorem. So, this 
 is only true if the vectors on the right are realization equivalent. Due to the reformulation, \cite[Lemma 9]{Gatti13Efficient} 
