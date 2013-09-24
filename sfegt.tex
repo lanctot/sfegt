@@ -42,6 +42,7 @@
 \usepackage{comment}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{amsbsy}
 %\usepackage{amsthm}
 \usepackage{calc}
 \usepackage{color}
@@ -379,6 +380,7 @@ A \defword{behavioral strategy} for player $i$ is a mapping from information set
 to a probability distribution over the actions $A_i(I)$, denoted by $\sigma_i(I)$. 
 If every distribution in the range of this mapping assigns all of its weight on a single action, 
 then the strategy is called \defword{pure}. 
+A \defword{mixed} strategy is a single explicit distribution over pure strategies. 
 Given a profile $\sigma$, we denote the probability of reaching a terminal state $z$ under $\sigma$ as 
 $\pi^\sigma(z) = \prod_{i \in N} \pi_i(z)$, where each $\pi_i(z)$ is a product of probabilities of the actions taken 
 by player $i$ in $X_i(z)$. Define $\Sigma_i$ to be the set of behavioral strategies for player $i$. 
@@ -541,11 +543,11 @@ u_i(\bx_i) & = & ~~g_q(\bx_i, q_1') \cdot u_i(q_1', \ldots, q_n') \prod_{q_k', k
            & = & ~~\bg_q(\bx_i) \cdot \bu(\bx_{-i}),
 \end{eqnarray*}
 and substituting from above we have 
-\[x_i(q,t)(\bg_q(\bx_i) \cdot \bu(\bx_{-i})) = \sum_{q' \in succ_i(q)} x_i(q',t) (\bg_{q'}(\bx_i) \cdot \bu(\bx_{-i})). \]
-Using distributivity of dot product, this can be rearranged:
+\[x_i(q,t)(\bg_q(\bx_i) \cdot \bu(\bx_{-i})) = \sum_{q' \in succ_i(q)} x_i(q',t) (\bg_{q'}(\bx_i) \cdot \bu(\bx_{-i})), \]
+which by distributivity and commutativity, rearranges to
 \[ \bu(\bx_{-i}) \cdot (x_i(q,t)(\bg_q(\bx_i)) = \bu(\bx_{-i})~\cdot\sum_{q' \in succ_i(q)} x_i(q',t) \bg_{q'}(\bx_i). \]
 The vectors on the left side of the dot products are equal.
-Therefore, it suffices to show the vectors on the right side are also equal, which is similar to the case of two-players.   
+Therefore, it suffices to show the vectors on the right side are also equal, which is similar to the case of two players.   
 For choices $q''$ where $X_i(q'')$ is inconsistent with $X_i(q)$, the parent and child weights are all set to $0$, so these 
 elements are equal by the induction assumption. 
 Similarly, for choices $q''$ where $q'' \in X_i(q)$, $g_q(\bx_i, q'') = g_{q'}(\bx_i, q'') = 1$, and these elements are also 
@@ -553,19 +555,63 @@ equal by the induction assumption.
 The remaining elements are equal by Eq.~\ref{eq:gdef} and \cite[Lemma 6]{Gatti13Efficient}. 
 \end{proof}
 
-\todo{realization equivalence}
+%\todo{realization equivalence}
+\noindent We now discuss realization equivalence with $n$ players. 
+\begin{definition}
+Two strategies $\sigma_i$ and $\sigma_i'$ are \defword{realization equivalent} if 
+$\forall h \in H, \forall \sigma_{-i} \in \Sigma_{-i}, \pi^{\sigma}_i(h) = \pi^{\sigma'}(h)$. 
+\end{definition}
+In other words, every history is reachable with the same probability given an arbitrary fixed opponent profile. 
+Due to perfect recall, every mixed strategy has an equivalent behavioral strategy~\cite{Kuhn53}. 
+Similarly, every mixed strategy has an equivalent realization plan and every realization plan has 
+and equivalent behavioral strategy~\cite{SequenceFormLPs}. Therefore, the definition can be used for these 
+other forms by reasoning about their equivalent behavioral forms. 
+
+An important result from~\cite{Gatti13Efficient} is that strategies produced by SFRD are realization equivalent 
+to the standard normal-form replicator dynamics. We reuse the key result (\cite[Lemma 9]{Gatti13Efficient}) 
+in our extension to $n$ players.
+
+\begin{theorem}
+Given some game $G$ with player set $N$, 
+let $\sigma(t)$ be a mixed strategy profile and $\sigma(t+1)$ be the profile produced by 
+standard discrete-time replicator dynamics using $G$'s normal-form representation. 
+Let $\bx(t)$ be a realization profile and $\bx(t+1)$ a realization profile in $G$'s sequence-form produced by 
+Equation~\ref{eq:dt-sfrd}. Then for all players $i \in N$, $\bx(t+1)$ and $\sigma(t+1)$ are realization equivalent.
+\end{theorem}
+\begin{proof}
+Let $s_i \in S_i$ be a pure strategy for player $i$. 
+For $q' \in succ_i(q)$, $x_i(q', t) = \sum_{s_i \in S_i, q \in s_i} \sigma(s_i)$. 
+We need to show that this is also true at time $t+1$. By applying Equation~\ref{eq:dt-sfrd} and standard
+replicator dynamics, this becomes
+\[
+  x_i(q',t) \frac{u_i(\bx_{i \rightarrow g_{q'}})}{u(\bx)} 
+= \sum_{s_i \in S_i, q \in s_i} \left( \sigma(s_i,t) \frac{u_i(\sigma_{i \rightarrow s_i})}{u(\sigma)} \right)
+\]
+We know that $u(\bx) = u(\sigma)$ by the statement of the theorem, so we can remove these denominators.
+Similar to above, the utilities can be decomposed into a dot product of vectors and re-arranged, to give:
+\[
+  \bu(\bx_{-i}) \cdot (x_i(q',t)(\bg_{q'}(\bx_i)) 
+= \bu(\sigma_{-i})~\cdot \sum_{s_i \in S_i, q \in s_i} \sigma(s_i,t) \boldsymbol\sigma_{i \rightarrow s_i}.
+\]
+\noindent The vectors on left are realization equivalent by the statement of the theorem. So, this 
+is only true if the vectors on the right are realization equivalent. Due to the reformulation, \cite[Lemma 9]{Gatti13Efficient} 
+can be applied since there is no dependence on the opponents nor number of players. 
+\end{proof}
+
+The analysis of these properties for continuous-time replicator dynamics is almost identical and, as such, is omitted.
 
 \subsection{Link to No-Regret Learning in Self-Play}
 
 In this section we show that discrete-time SFRD (equation~\ref{eq:dt-sfrd}) corresponds to a form of counterfactual 
 regret minimization. As a result, we show that in two-player zero-sum games, convergence to an equilbrium is guaranteed, 
 even if the equilibrium point is not stable. We show convergence in practice in the general case in 
-Section~\ref{sec:exp}. As in~\cite{Klos10Evolutionary}, the Polynomial Weights (PW) algorithm is; 
-however, unlike \cite{Klos10Evolutionary} we show that SFRD corresponds to regret minimization rather than analyze the 
+Section~\ref{sec:exp}. 
+As in~\cite{Klos10Evolutionary}, the Polynomial Weights (PW) algorithm is used; 
+however, unlike \cite{Klos10Evolutionary} we show that SFRD corresponds to regret minimization rather than analyzing the 
 evolutionary dynamics of PW. In particular, SFRD corresponds to counterfactual regret minimization where PW replaces 
 regret-matching as the underlying no-regret learner at each information set. 
 
-Polynomial Weights~\cite{Blum07} is an generalization of the Randomized Weighted Majority algorithm~\cite{Littlestone94WM}.
+Polynomial Weights~\cite{Blum07} is a generalization of the Randomized Weighted Majority algorithm~\cite{Littlestone94WM}.
 
 
 %\subsection{Stability and Trembling-Hand Perfection}
