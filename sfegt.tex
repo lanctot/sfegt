@@ -228,12 +228,14 @@ However, complex interactions as modeled by general extensive-form games, has be
 significantly less so than the normal-form ``one-shot'' games. 
 Recently, replicator dynamics have been adapted to extensive-form games represented in sequence form, leading to 
 a large reduction in computational resource requirements. 
-In this paper, we provide the first evidence of convergence to equilibrium strategies. 
-In additon, we generalize the sequence-form replictor dynamics to more than two players, and show that they can 
+In this paper, we generalize the sequence-form replictor dynamics to more than two players, and show that they can 
 find equilibrium points in general $n$-player games as well. 
 We show a link between sequence-form replicator dynamics and regret minimization and use it to derive formal guarantees
 of convergence in two-player constant-sum games.
-Finally, we analyze the stability of the solutions and on equilibrium refinements, such as trembling-hand perfect equilibria. 
+We provide the first empirical evaluation of sequence-form replicator dynamics for both two-player and $n$-player
+games.
+Finally, we evaluate the stability of the solutions, relating the to equilibrium refinements such as trembling-hand perfect equilibria.
+%Finally, we analyze the stability of the solutions and on equilibrium refinements, such as trembling-hand perfect equilibria. 
 \end{abstract}
 
 % Note that the category section should be completed after reference to the ACM Computing Classification Scheme available at
@@ -317,8 +319,6 @@ that can be represent general extensive games with much less computational requi
 normal forms. 
 
 In this paper, we first extend SFRD to $n$-player games and show that properties are conserved with more than two players. 
-To the best of our knowledge, this work constitutes the first use of the sequence-form representation for games 
-with $n > 2$ players. 
 We show that in two-player zero-sum games, SFRD corresponds to no-regret learning and hence convergence to an 
 equilibrium is guaranteed, even if equilibrium points are not stable. 
 We present the first empirical evaluation of SFRD and, in particular, the first evidence confirming the convergence 
@@ -326,6 +326,9 @@ of SFRD to a Nash equilibrium in two-player games, both in theory (for two playe
 Finally, we empirically evaluate the stability of the solutions and show that stable rest points correspond to 
 trembling-hand perfect equilibria.
 %TODO: make sure we actually do this!
+
+To the best of our knowledge, this work constitutes the first use of the sequence-form representation for games 
+with $n > 2$ players. 
 
 \section{Game Theory Background}
 
