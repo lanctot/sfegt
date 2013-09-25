@@ -442,7 +442,7 @@ Continuous-time SFRD is described by the differential equation for all players $
 \label{eq:ct-sfrd}
 \dot{x}_i(q,t) = x_i(q,t) \cdot u_i(\bx_{i \rightarrow \Delta g_{q}}),
 \end{equation}
-where $\bx_{i \rightarrow \Delta g_q}$ corresponds to the profile $\bx$ except player $i$ uses $g_q(\bx_i) - \bx_i$. 
+where $\bx_{i \rightarrow \Delta g_q}$ corresponds to the profile $\bx$ except player $i$ uses $\Delta g_q(\bx_i) = g_q(\bx_i) - \bx_i$. 
 
 The function $g_q(\bx_i)$ modifies $\bx_i$ in the following way. 
 For for all pairs $(I,a) \in X_i(q)$: the action $a$ is always taken (realization weight
@@ -465,6 +465,46 @@ $X_i(q) \cap X_i(q')$. For some examples, see \cite{Gatti13Efficient}.
 An important result is that SFRD is realization-equivalent to the standard replicator dynamics. Therefore, applying SFRD is identical 
 to applying standard replicator dynamics to the normal-form equivalent game. However, SFRD requires exponentially less space to represent
 the game. 
+
+\subsection{Regret Minimization}
+
+Suppose a algorithm $A$ must choose an action among $K$ alternatives. 
+Associated with each action is a payoff, generated from a distribution or by an adversary. 
+The (possibly randomized) algorithm plays $T$ trials and collects payoff $u_k^t$ for choosing 
+action $k$ at time $t$. 
+The (expected) \defword{regret} is difference between the cumulative payoff and the payoff that would 
+have been achieved by choosing the best single action in hindsight, 
+\[
+R^T = \bE \left[ \max_{k \in \{1, \ldots, K\}} \sum_{1 \le t \le T} u_k^t - \sum_{1 \le t \le T} u_{A(t)}^t \right]
+\].
+
+Define the average regret to be $\bar{R}^T = R^T / T$. We call algorithm $A$ a 
+\defword{regret minimization algorithm} if $\lim_{T \rightarrow \infty} \bar{R}^T$ $= 0$. 
+Often, the algorithm modifies how it chooses during the trials based on the collected payoffs, and so 
+these are also appropriately known as {\it no-regret learning algorithms}. 
+
+The Polynomial Weights (PW) algorithm~\cite{Blum07} is a generalization of the Randomized Weighted Majority 
+algorithm~\cite{Littlestone94WM}. Each action has a weight $w_i$, and chooses action $k$ with a probability
+$p_k = w_k / \sum_{k'=1}^K w_k'$. After each trial, the weights are updated using $w_k \leftarrow w_k (1 + \eta \cdot u_{PW}))$. 
+The regret of PW is bounded by $R^T \le O(2 \sqrt{T \ln N})$. 
+
+There are important connections between game theory and regret minimization~\cite{Blum07}. One main result 
+is that in two-player zero-sum games, if every player uses a regret minimization algorithm, and after 
+$T$ trials $R_i^T \le \epsilon$, then the average profile $\bar{\sigma}^T$ converges to a $2\epsilon$-equilibrium.
+
+Counterfactual Regret (CFR) is an notion of regret at the information set level for extensive-form games~\cite{CFR}. 
+Suppose player $i$ plays with strategy $\sigma_i$. The counterfactual value of taking action $a \in A(I)$ at information 
+set $I$ is the expected payoff when $I$ is reached given that player $i$ played to reach $I$ and the opponents played 
+$\sigma_{-i}$, 
+\begin{equation}
+v_i(I,a) = \sum_{z \in Z_I} \pi^{\sigma}_{-i}(h) u_i(z) \pi^{\sigma_{I \rightarrow a}}_{i}(h, z),
+\end{equation}
+where $Z_I = \{ z | z \in Z, h \in I, h \sqsubseteq z\}$, $\sigma_{I \rightarrow a}$ is identical to $\sigma$ except 
+at $I$ action $a$ is taken with probability $1$, and $\pi^\sigma(h,z)$ is the product of probability from $h$ to $z$. 
+The CFR algorithm places a regret minimizer at each $I \in \cI_i$ which treats $v_i(I,a)$ as the payoff for taking action $a$. 
+The main result is that the combination of individual regret minimizers
+combines to minimize overall regret, and hence the average profile is an $2\epsilon$-equilibrium, with $\epsilon \rightarrow 0$
+as $T \rightarrow \infty$. 
 
 \subsection{Kuhn Poker}
 
@@ -495,9 +535,6 @@ found experimentally using counterfactual regret minimization in KP$(3)$~\cite{A
 Recently, a family of parameterized eqilibrium profiles were analytically derived for KP$(3)$~\cite{Szafron13Kuhn}.
 While replicator dynamics have been applied to abstractions of complex Poker games~\cite{ponsen09b},
 to the best of our knowledge KP$(n), n > 3$ has not yet been analyzed.  
-
-% might need this
-%\subsection{Counterfactual Regret Minimization}
 
 \section{New Developments of SFRD}
 
@@ -605,9 +642,25 @@ is only true if the vectors on the right are realization equivalent. Due to the 
 can be applied since there is no dependence on the opponents nor number of players. 
 \end{proof}
 
-The analysis of these properties for continuous-time replicator dynamics is almost identical and, as such, is omitted.
+\begin{theorem}
+\label{thm:ct-constraints}
+Given a valid realization profile $\bx(t) = $\\ $(\bx_1(t), \ldots, \bx_n(t))$, a new $\bx(t + \Delta t)$ produced by
+Equation~\ref{eq:ct-sfrd} satisfies the sequence-form constraints. 
+\end{theorem}
 
-\subsection{Link to No-Regret Learning in Self-Play}
+\begin{theorem}
+\label{thm:ct-releq}
+Given some game $G$ with player set $N$, 
+let $\sigma(t)$ be a mixed strategy profile and $\sigma(t + \Delta t)$ be the profile produced by 
+standard continuous-time replicator dynamics using $G$'s normal-form representation. 
+Let $\bx(t)$ be a realization profile and $\bx(t + \Delta t)$ a realization profile in $G$'s sequence-form produced by 
+Equation~\ref{eq:ct-sfrd}. Then for all players $i \in N$, $\bx(t+\delta t)$ and $\sigma(t + \Delta t)$ are realization equivalent.
+\end{theorem}
+
+The proofs of Theorems \ref{thm:ct-constraints} and \ref{thm:ct-releq} are identical to the proofs for the discrete-time case 
+except $g_q(\bx_i)$ is replaced by $\Delta g_q(\bx_i)$.
+
+\subsection{Link to CFR Minimization}
 
 In this section we show that discrete-time SFRD (equation~\ref{eq:dt-sfrd}) corresponds to a form of counterfactual 
 regret minimization. As a result, we show that in two-player zero-sum games, convergence to an equilbrium is guaranteed, 
@@ -618,7 +671,6 @@ however, unlike \cite{Klos10Evolutionary} we show that SFRD corresponds to regre
 evolutionary dynamics of PW. In particular, SFRD corresponds to counterfactual regret minimization where PW replaces 
 regret-matching as the underlying no-regret learner at each information set. 
 
-Polynomial Weights~\cite{Blum07} is a generalization of the Randomized Weighted Majority algorithm~\cite{Littlestone94WM}.
 
 
 %\subsection{Stability and Trembling-Hand Perfection}
