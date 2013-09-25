@@ -470,13 +470,14 @@ the game.
 
 Suppose a algorithm $A$ must choose an action among $K$ alternatives. 
 Associated with each action is a payoff, generated from a distribution or by an adversary. 
-The (possibly randomized) algorithm plays $T$ trials and collects payoff $u_k^t$ for choosing 
+The (possibly randomized) algorithm repeats the process over $T$ trials and collects payoff $u_k^t$ for choosing 
 action $k$ at time $t$. 
 The (expected) \defword{regret} is difference between the cumulative payoff and the payoff that would 
 have been achieved by choosing the best single action in hindsight, 
-\[
+\begin{equation}
+\label{eq:regret}
 R^T = \bE \left[ \max_{k \in \{1, \ldots, K\}} \sum_{1 \le t \le T} u_k^t - \sum_{1 \le t \le T} u_{A(t)}^t \right]
-\].
+\end{equation}
 
 Define the average regret to be $\bar{R}^T = R^T / T$. We call algorithm $A$ a 
 \defword{regret minimization algorithm} if $\lim_{T \rightarrow \infty} \bar{R}^T$ $= 0$. 
@@ -485,8 +486,9 @@ these are also appropriately known as {\it no-regret learning algorithms}.
 
 The Polynomial Weights (PW) algorithm~\cite{Blum07} is a generalization of the Randomized Weighted Majority 
 algorithm~\cite{Littlestone94WM}. Each action has a weight $w_i$, and chooses action $k$ with a probability
-$p_k = w_k / \sum_{k'=1}^K w_k'$. After each trial, the weights are updated using $w_k \leftarrow w_k (1 + \eta \cdot u_{PW}))$. 
-The regret of PW is bounded by $R^T \le O(2 \sqrt{T \ln N})$. 
+$p_k = w_k / \sum_{k'=1}^K w_k'$. After each trial, the weights are updated using $w_k \leftarrow w_k (1 - \eta \cdot l_{PW}))$, 
+where $l_{PW}$ is a loss incurred by the algorithm on the last step.
+The regret of PW is bounded by $R^T \le O(\sqrt{T \ln N})$. 
 
 There are important connections between game theory and regret minimization~\cite{Blum07}. One main result 
 is that in two-player zero-sum games, if every player uses a regret minimization algorithm, and after 
@@ -497,9 +499,10 @@ Suppose player $i$ plays with strategy $\sigma_i$. The counterfactual value of t
 set $I$ is the expected payoff when $I$ is reached given that player $i$ played to reach $I$ and the opponents played 
 $\sigma_{-i}$, 
 \begin{equation}
-v_i(I,a) = \sum_{z \in Z_I} \pi^{\sigma}_{-i}(h) u_i(z) \pi^{\sigma_{I \rightarrow a}}_{i}(h, z),
+\label{eq:cfv}
+v_i(I,a) = \sum_{(h,z) \in Z_I} \pi^{\sigma}_{-i}(h) u_i(z) \pi^{\sigma_{I \rightarrow a}}_{i}(h, z),
 \end{equation}
-where $Z_I = \{ z | z \in Z, h \in I, h \sqsubseteq z\}$, $\sigma_{I \rightarrow a}$ is identical to $\sigma$ except 
+where $Z_I = \{ (h,z) | z \in Z, h \in I, h \sqsubseteq z\}$, $\sigma_{I \rightarrow a}$ is identical to $\sigma$ except 
 at $I$ action $a$ is taken with probability $1$, and $\pi^\sigma(h,z)$ is the product of probability from $h$ to $z$. 
 The CFR algorithm places a regret minimizer at each $I \in \cI_i$ which treats $v_i(I,a)$ as the payoff for taking action $a$. 
 The main result is that the combination of individual regret minimizers
@@ -580,11 +583,11 @@ we rewrite the utility $u_i(\bx_{i \rightarrow g_q}, t)$ using Equation~\ref{eq:
 components belonging to $i$ and to the opponents $-i$: 
 \begin{eqnarray*}
 %x & y & z \\ 
-u_i(\bx_i) & = & ~~g_q(\bx_i, q_1') \cdot u_i(q_1', \ldots, q_n') \prod_{q_k', k \not= i} x_k(q_k') \\
-           &   & +~g_q(\bx_i, q_1'') \cdot u_i(q_1'', \ldots, q_n'') \prod_{q_k'', k \not= i} x_k(q_k'') \\
-           &   & +~g_q(\bx_i, q_1''') \cdot u_i(q_1''', \ldots, q_n''') \prod_{q_k''', k \not= i} x_k(q_k''') \\
-           &   & ~~\cdots \\
-           & = & ~~\bg_q(\bx_i) \cdot \bu(\bx_{-i}),
+u_i(\bx_{i \rightarrow g}) & = & ~~g_q(\bx_i, q_1') \cdot u_i(q_1', \ldots, q_n') \prod_{q_k', k \not= i} x_k(q_k') \\
+                           &   & +~g_q(\bx_i, q_1'') \cdot u_i(q_1'', \ldots, q_n'') \prod_{q_k'', k \not= i} x_k(q_k'') \\
+                           &   & +~g_q(\bx_i, q_1''') \cdot u_i(q_1''', \ldots, q_n''') \prod_{q_k''', k \not= i} x_k(q_k''') \\
+                           &   & ~~\cdots \\
+                           & = & ~~\bg_q(\bx_i) \cdot \bu(\bx_{-i}),
 \end{eqnarray*}
 and substituting from above we have 
 \[x_i(q,t)(\bg_q(\bx_i) \cdot \bu(\bx_{-i})) = \sum_{q' \in succ_i(q)} x_i(q',t) (\bg_{q'}(\bx_i) \cdot \bu(\bx_{-i})), \]
@@ -638,8 +641,8 @@ Then, similarly to above the utilities can be decomposed into a dot product of v
 = \bu(\sigma_{-i})~\cdot \sum_{s_i \in S_i(q)} \sigma(s_i,t) \boldsymbol\sigma_{i \rightarrow s_i}.
 \]
 \noindent The vectors on left are realization equivalent by the statement of the theorem. So, this 
-is only true if the vectors on the right are realization equivalent. Due to the reformulation, \cite[Lemma 9]{Gatti13Efficient} 
-can be applied since there is no dependence on the opponents nor number of players. 
+is only true if the vectors on the right are realization equivalent. The right-side vectors are realization equivalent 
+by \cite[Lemma 9]{Gatti13Efficient} since there is no dependence on the opponents nor number of players. 
 \end{proof}
 
 \begin{theorem}
@@ -666,10 +669,58 @@ In this section we show that discrete-time SFRD (equation~\ref{eq:dt-sfrd}) corr
 regret minimization. As a result, we show that in two-player zero-sum games, convergence to an equilbrium is guaranteed, 
 even if the equilibrium point is not stable. We show convergence in practice in the general case in 
 Section~\ref{sec:exp}. 
-As in~\cite{Klos10Evolutionary}, the Polynomial Weights (PW) algorithm is used; 
+Similar to~\cite{Klos10Evolutionary} we relate Polynomial Weights (PW) and replicator dynamics; 
 however, unlike \cite{Klos10Evolutionary} we show that SFRD corresponds to regret minimization rather than analyzing the 
 evolutionary dynamics of PW. In particular, SFRD corresponds to counterfactual regret minimization where PW replaces 
 regret-matching as the underlying no-regret learner at each information set. 
+
+Every information set $I \in \cI_i$ for all players $i$ has its own instance of PW. 
+Denote $w_{I,a}(t)$ as the weight of the instance at $I$ for action $a \in A(I)$. 
+The initial weights $w^0_{I,a} = 1$ for all $(I,a) \in Q_i$. 
+This leads to a fully-mixed behavioral strategy where at each $I$, player $i$ chooses an action 
+$a \in A(I)$ uniformly at random.
+Letting $q = (I,a)$, we construct a loss for the instance at $I$ with the following form,
+\begin{equation}
+\label{eq:loss}
+l_{I,a} = \frac{\max_{a' \in A(I)} u_i(\bx_{i \rightarrow g_{(I,a')}}) - u_i(\bx_{i \rightarrow g_q})}{\Delta_{-i}(I)}, \mbox{ where }
+\end{equation}
+$\Delta_{-i}(I) =  \max_{a', a'' \in A(I)} ( u_i(\bx_{i \rightarrow g_{(I,a')}}) - u_i(\bx_{i \rightarrow g_{(I,a'')}}) )$ 
+is the counterfactual payoff range when $I$ is reached. 
+It is easy to see that $l_{I,a} \in [0,1]$: in the numerator and denominator, the payoffs for all the terms such that $(h,z) \not\in Z_I$ 
+cancel out, leaving the payoffs when reaching $I$. The denominator the largest value that the numerator can equal. 
+
+%We first show that $u_i(\bx_{i \rightarrow g_q})$ corresponds 
+
+\begin{lemma}
+When using discrete-time SFRD, the update for $q = (I,a)$ from Equation~\ref{eq:dt-sfrd} corresponds to an equivalent update 
+of the PW instance at $I$ for action $a$ with the loss $l_{I,a}$ as defined in Equation~\ref{eq:loss}.
+\end{lemma}
+\begin{proof}
+From Equation~\ref{eq:dt-sfrd}, let $w_i(t) = x_i(q,t)$, we have
+\begin{eqnarray*}
+  &             & w_i(t+1) = w_i(t) u_i(\bx_{i \rightarrow g_g}) / u_i(\bx) \\
+  & \Rightarrow & w_i(t+1) = w_i(t) u_i(\bx_{i \rightarrow g_g}) \\
+  & \Rightarrow & w_i(t+1) = w_i(t) (\max_{a' \in A(I)} u_i(\bx_{i \rightarrow g_{(I,a')}}) - \Delta_{-i}(I) l_{I,a}) \\   
+  & \Rightarrow & w_i(t+1) = w_i(t) (1 - \frac{\Delta_{-i}(I)}{\max_{a' \in A(I)} u_i(\bx_{i \rightarrow g_{(I,a')}})} l_{I,a}).
+\end{eqnarray*}
+The second and fourth lines follow because scaling by a constant at $I$ does not affect the distribution at $I$ due to normalization.
+The third line substitutes $u_i(\bx_{i \rightarrow g_q})$ from Eq~\ref{eq:loss}. 
+Here, $\eta = \Delta_{-i}(I) / ({\max_{a' \in A(I)} u_i(\bx_{i \rightarrow g_{(I,a')}})})$ and $0 \le \eta \le 1$, since $\Delta_{-i}(I)$
+is a payoff range, subtracts the minimum value at $I$, 
+and ${\max_{a' \in A(I)} u_i(\bx_{i \rightarrow g_{(I,a')}})}$ includes terms for $(h,z) \not\in Z_I$.
+\end{proof}
+
+This result shows that discrete-time SFRD also minimizes the individual regret of the PW learner at $I$. We now show that these individual 
+regrets are, in fact, forms of counterfactual regrets. As in the original work, we show that the combination of these particular PW learners 
+minimize overall regret. Hence, discrete-time SFRD minimizes overall regret. 
+
+\begin{theorem}
+The big theorem.
+\end{theorem}
+\begin{proof}
+The big proof.
+\end{proof}
+
 
 
 
