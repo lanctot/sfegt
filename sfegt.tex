@@ -729,9 +729,9 @@ Let $R^T_i$ be overall regret for player $i$, and $\bar{R}^T_i = R^T / T$. The o
 discrete-time SFRD is bounded by: 
 \[
 \bar{R}^T_i \le \frac{\Delta_{-i}}{T} \sum_{ I \in \cI_i} \max_{a \in A(I)} \sum_{t=1}^T ( l^t_{I,\sigma} - l^t(I,a) ) 
-            \le 2|\cI| \frac{\ln |A_i|}{\sqrt{T}},  \]
+            \le O \left( \frac{|\cI_i| \ln |A_i|}{\eta_{\min}\sqrt{T}} \right),  \]
 where $\Delta_{-i} \le | \cI_i |$, $l^t_{I,\sigma} = \sum_{a \in A(I)} \sigma(I,a) l^t(I,a)$, and 
-$|A_i| = \max_{I \in \cI} |A(I)|$.
+$|A_i| = \max_{I \in \cI_i} |A(I)|$.
 \end{theorem}
 \begin{proof}
 For $I \in \cI_i$, $v_i(I,a) - v_i(I,\sigma)$
@@ -749,9 +749,9 @@ R^T_{i,imm}(I) & \le & \frac{1}{T}           \max_{a \in A(I)} \left( \sum_{t=1}
 \end{eqnarray*}
 where $\Delta_{-i} = \max_{1 \le t \le T} \Delta^t_{-i}(I)$. The rest of the proof follows by Theorems 3 and 4 of \cite{CFR}, 
 except that the regret bound for Polynomial Weights is used instead of the one for regret-matching.  
-
 \end{proof}
 
+\todo{fix bound to be exact and/or somehow include $\eta$; make sure $\eta$ can be changed each trial in the polynomial weights algorithm?}
 
 
 
