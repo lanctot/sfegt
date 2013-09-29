@@ -634,7 +634,7 @@ Let $\bx(t)$ be a realization profile and $\bx(t + \Delta t)$ a realization prof
 Equation~\ref{eq:ct-sfrd}. Then for all players $i \in N$, $\bx(t+\delta t)$ and $\sigma(t + \Delta t)$ are realization equivalent.
 \end{theorem}
 
-The proofs of Theorems \ref{thm:ct-constraints} and \ref{thm:ct-releq} are identical to the proofs for the discrete-time case 
+The proofs of Theorems \ref{thm:ct-constraints} and \ref{thm:ct-releq} are identical to the proofs for the discrete case 
 except $g_q(\bx_i)$ is replaced by $\Delta g_q(\bx_i)$.
 
 \subsection{Link to CFR Minimization}
@@ -684,7 +684,8 @@ is a payoff range, subtracts the minimum value at $I$,
 and ${\max_{a' \in A(I)} u_i(\bx_{i \rightarrow g_{(I,a')}})}$ includes terms for $(h,z) \not\in Z_I$.
 \end{proof}
 
-This result shows that discrete-time SFRD also minimizes the individual regret of the $\PW(I)$. 
+%This result shows that discrete-time SFRD also minimizes the individual regret of the $\PW(I)$. 
+
 We now show that these individual 
 regrets are, in fact, forms of counterfactual regrets. 
 First, we relate $g(\bx_i)$ to counterfactual values. 
@@ -704,23 +705,23 @@ profiles $\bx_{i \rightarrow g(I,a')}$ and $\bx_{i \rightarrow g_q}$ are identic
 for all $q$ leading to terminal histories outside $Z_I$. Therefore, the left-hand side 
 can be rewritten as 
 \begin{eqnarray*}
-  &   & \max_{a' \in A(i)} \sum_{(ha',z) \in Z_i} \pi^{\sigma}_i(h) \pi^{\sigma}_i(ha,z) \pi^{\sigma}_{-i}(z) u_i(z) \\
-  &   & - \sum_{(h,z) \in z_i} \pi^{\sigma}_i(h) \pi^{\sigma}_i(ha,z) \pi^{\sigma}_{-i}(z) u_i(z) \\
-  & = & \max_{a' \in A(i)} \sum_{(ha',z) \in Z_i} \pi^{\sigma_i}(ha,z) \pi^{\sigma}_{-i}(z) u_i(z) \\
-  &   & - \sum_{(h,z) \in z_i} \pi^{\sigma}_i(ha,z) \pi^{\sigma}_{-i}(z) u_i(z) \\
+  &   & \max_{a' \in A(i)} \sum_{(ha',z) \in Z_I} \pi^{\sigma}_i(h) \pi^{\sigma}_i(ha,z) \pi^{\sigma}_{-i}(z) u_i(z) \\
+  &   & - \sum_{(h,z) \in Z_I} \pi^{\sigma}_i(h) \pi^{\sigma}_i(ha,z) \pi^{\sigma}_{-i}(z) u_i(z) \\
+  & = & \max_{a' \in A(i)} \sum_{(ha',z) \in Z_I} \pi^{\sigma_i}(ha,z) \pi^{\sigma}_{-i}(z) u_i(z) \\
+  &   & - \sum_{(h,z) \in Z_I} \pi^{\sigma}_i(ha,z) \pi^{\sigma}_{-i}(z) u_i(z) \\
   & = & \max_{a' \in A(i)} v_i(I,a') - v_i(I,a).
 \end{eqnarray*}
 The second line follows from the fact that $\sigma_i(h) = 1$ for $h \in I$ and distributions below $I$ are unchanged
 by Eq.~\ref{eq:gdef}. The last line follows from the definition of counterfactual value in Eq.~\ref{eq:cfv}.
 \end{proof}
 
-Define \defword{immediate counterfactual regret} for player $i$ at time $T$ as in~\cite{CFR}:
+Define the \defword{average immediate counterfactual regret} for player $i$ at time $T$ as in~\cite{CFR}:
 \begin{equation}
 \label{eq:cfr}
-R^T_{i,imm} = \frac{1}{T} \max_{a \in A(I)} \left( \sum_{t=1}^T v_i(I, a) - v_i(I, \sigma^t) \right),
+\bar{R}^T_{i,imm} = \frac{1}{T} \max_{a \in A(I)} \left( \sum_{t=1}^T v_i(I, a) - v_i(I, \sigma^t) \right),
 \end{equation}
 where $\sigma^t$ is the profile used by both players at time $t$. 
-As in the original work, we show that the combination of PW learners, $\{ \PW(I) | I \in \cI \}$,
+As in the original work, we show that the combination of PW learners over all information sets
 minimizes overall regret. Hence, discrete-time SFRD minimizes overall regret. 
 
 \begin{theorem}
@@ -741,10 +742,10 @@ For $I \in \cI_i$, $v_i(I,a) - v_i(I,\sigma)$
  & = & - \Delta_{-i}(I) l_{I,a} + \sum_{a \in A(I)} \sigma_i(I,a) \Delta_{-i}(I) l_{I,a}\\
  & = & \Delta_{-i}(I) ( l_{I,\sigma} - l_{I,a} ) 
 \end{eqnarray*}
-The first two lines are by Eq~\ref{eq:loss} and Lemma~\ref{lem:rel-cfv}.
-The third line is since $\sum_{a \in A(I)} \sigma_i(I,a) = 1$. Substituting into into Eq.~\ref{eq:cfr}, 
+The first line follows from Eq~\ref{eq:loss} and Lemma~\ref{lem:rel-cfv}.
+The second line follows since $\sum_{a \in A(I)} \sigma_i(I,a) = 1$. Substituting into Eq.~\ref{eq:cfr} leads to
 \begin{eqnarray*} 
-R^T_{i,imm}(I) & \le & \frac{1}{T}           \max_{a \in A(I)} \left( \sum_{t=1}^T \Delta^t_{-i}(I) (l^t_{I,\sigma} - l^t_{I,a}) \right) \\
+\bar{R}^T_{i,imm}(I) & \le & \frac{1}{T}           \max_{a \in A(I)} \left( \sum_{t=1}^T \Delta^t_{-i}(I) (l^t_{I,\sigma} - l^t_{I,a}) \right) \\
                & \le & \frac{\Delta_{-i}}{T} \max_{a \in A(I)} \left( \sum_{t=1}^T (l^t_{I,\sigma} - l^t_{I,a}) \right), 
 \end{eqnarray*}
 where $\Delta_{-i} = \max_{1 \le t \le T} \Delta^t_{-i}(I)$. The rest of the proof follows by Theorems 3 and 4 of \cite{CFR}, 
@@ -752,8 +753,7 @@ except that the regret bound for Polynomial Weights is used instead of the one f
 \end{proof}
 
 \todo{fix bound to be exact and/or somehow include $\eta$; 
-make sure $\eta$ can be changed each trial in the polynomial weights algorithm?
-}
+make sure $\eta$ can be changed each trial in the polynomial weights algorithm?}
 
 
 
