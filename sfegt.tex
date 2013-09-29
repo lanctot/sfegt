@@ -60,6 +60,7 @@
 \newcommand{\bU}{\mathbf{U}}
 \newcommand{\cI}{\mathcal{I}}
 \newcommand{\cC}{\mathcal{C}}
+\newcommand{\PW}{\mbox{PW}}
 \newcommand{\defword}[1]{\textbf{\boldmath{#1}}}
 \newcommand{\ie}{{\it i.e.}}
 \newcommand{\eg}{{\it e.g.}}
@@ -395,13 +396,16 @@ As is convention, $\sigma_{-i}$ and $\pi_{-i}^\sigma$ refer to player $i's$ oppo
 An \defword{$\epsilon$-Nash equilibrium} profile is a set of $\sigma_i$ for $i \in N$ such that the benefit to switching to some 
 alternative $\sigma_i'$,
 %that are the arguments of maximization and minimization in
-\begin{equation}\label{eq:ne}
+\begin{equation}
+  \label{eq:ne}
   \max_{\sigma_i' \in \Sigma_i} \left\{ \sum_{z \in Z} \pi_i^{\sigma'}(z) \pi_{-i}^\sigma(z) u_i(z) \right\} - u_i(z) \le \epsilon_i
 \end{equation}
 holds for all players $i$ and $\epsilon = \max_{i \in N} \epsilon_i$. When $\epsilon = 0$, the profile is simply called a Nash equilibrium. 
-When $|N| = 2$ and $u_1(z) = -u_2(z)$ for all $z \in Z$, 
-then the game is a two-player zero-sum game. Two-player zero-sum games form an important subset of extensive-form games due to their
-worst-case guarantees: different equilibrium strategies result in the same expected payoff against any arbitrary opponent equilibrium strategy.
+In this paper, we assume payoffs $0 \le u_i(z) \le 1$. Payoffs in games outside this range can be shifted by a constant and 
+then scaled by the payoff range without changing the set of strategies that optimize Equation~\ref{eq:ne}.
+When $|N| = 2$ and $u_1(z) + u_2(z) = k$ for all $z \in Z$, 
+then the game is a two-player $k$-sum game, where $k$ is a constant; these games form an important subset of extensive-form games
+due to their worst-case guarantees: different equilibrium strategies result in the same expected payoff against any arbitrary opponent equilibrium strategy.
 
 \subsection{Sequence-Form Replicator Dynamics}
 
@@ -500,7 +504,7 @@ set $I$ is the expected payoff when $I$ is reached given that player $i$ played 
 $\sigma_{-i}$, 
 \begin{equation}
 \label{eq:cfv}
-v_i(I,a) = \sum_{(h,z) \in Z_I} \pi^{\sigma}_{-i}(h) u_i(z) \pi^{\sigma_{I \rightarrow a}}_{i}(h, z),
+v_i(I,a) = \sum_{(h,z) \in Z_I} \pi^{\sigma}_{-i}(h) \pi^{\sigma_{I \rightarrow a}}_{i}(h, z) u_i(z),
 \end{equation}
 where $Z_I = \{ (h,z) | z \in Z, h \in I, h \sqsubseteq z\}$, $\sigma_{I \rightarrow a}$ is identical to $\sigma$ except 
 at $I$ action $a$ is taken with probability $1$, and $\pi^\sigma(h,z)$ is the product of probability from $h$ to $z$. 
@@ -508,36 +512,6 @@ The CFR algorithm places a regret minimizer at each $I \in \cI_i$ which treats $
 The main result is that the combination of individual regret minimizers
 combines to minimize overall regret, and hence the average profile is an $2\epsilon$-equilibrium, with $\epsilon \rightarrow 0$
 as $T \rightarrow \infty$. 
-
-\subsection{Kuhn Poker}
-
-% refer to Hoen et. al, abou risk, rich gibson
-
-Kuhn poker is a simplified poker game originally proposed by Harold W. Kuhn~\cite{Kuhn50}. 
-Kuhn poker has been analyzed analytically by Kuhn and used as a testbed in studies in 
-algorithms and multiagent systems~\cite{hoehn05,AbouRisk10,Szafron13Kuhn}.  
-
-Generalized $n$-player Kuhn poker, KP$(n)$ consists of a deck with $n+1$ cards $\{ 1, 2, \cdots, n, n+1 \}$. 
-Every player starts with 2 chips. At the start of the game, each player antes one of their chips placing it
-into a central pot of $p = n$ chips. 
-Then, chance deals one card to each player. 
-The game starts with Player 1 and proceeds sequentially to the next player that is not eliminated. 
-A player may bet (if they have a chip) or pass. 
-To bet, a player puts the chip into the pot: $p \leftarrow p + 1$. 
-A player can fold by passing when $n < p < 2r$ where $r$ is the number of remaining players, \ie~players that have not been eliminated. 
-If a player folds, they are eliminated and receive a payoff of -1 for the chip lost. 
-The game proceeds until either (i) all but one player has folded, or (ii) $p = n$ and everyone has passed or all the 
-remaining players have run out of chips. 
-In the former case, the remaining player wins the pot. In the latter case, the 
-remaining player with the highest-valued card wins the pot. In all cases, a player's payoff is the number of chips
-they end up with minus their 2 starting chips. 
-
-Kuhn's original game used $n = 2$. The form of every equilibrium strategy for KP$(2)$ was derived analytically
-by Kuhn and and used in a number of studies, \eg~\cite{hoehn05}. An $\epsilon$-equilibrium, with $\epsilon = 0.0044563$ was 
-found experimentally using counterfactual regret minimization in KP$(3)$~\cite{AbouRisk10}. 
-Recently, a family of parameterized eqilibrium profiles were analytically derived for KP$(3)$~\cite{Szafron13Kuhn}.
-While replicator dynamics have been applied to abstractions of complex Poker games~\cite{ponsen09b},
-to the best of our knowledge KP$(n), n > 3$ has not yet been analyzed.  
 
 \section{New Developments of SFRD}
 
@@ -666,7 +640,7 @@ except $g_q(\bx_i)$ is replaced by $\Delta g_q(\bx_i)$.
 \subsection{Link to CFR Minimization}
 
 In this section we show that discrete-time SFRD (equation~\ref{eq:dt-sfrd}) corresponds to a form of counterfactual 
-regret minimization. As a result, we show that in two-player zero-sum games, convergence to an equilbrium is guaranteed, 
+regret minimization. As a result, convergence to an equilbrium is guaranteed in two-player zero-sum games, 
 even if the equilibrium point is not stable. We show convergence in practice in the general case in 
 Section~\ref{sec:exp}. 
 Similar to~\cite{Klos10Evolutionary} we relate Polynomial Weights (PW) and replicator dynamics; 
@@ -674,12 +648,12 @@ however, unlike \cite{Klos10Evolutionary} we show that SFRD corresponds to regre
 evolutionary dynamics of PW. In particular, SFRD corresponds to counterfactual regret minimization where PW replaces 
 regret-matching as the underlying no-regret learner at each information set. 
 
-Every information set $I \in \cI_i$ for all players $i$ has its own instance of PW. 
-Denote $w_{I,a}(t)$ as the weight of the instance at $I$ for action $a \in A(I)$. 
+Every $I \in \cI_i$ has its own individual no-regret learner, denoted $\PW(I)$. 
+Denote $w_{I,a}(t)$ as the weight of $\PW(I)$ at $I$ for action $a \in A(I)$. 
 The initial weights $w^0_{I,a} = 1$ for all $(I,a) \in Q_i$. 
 This leads to a fully-mixed behavioral strategy where at each $I$, player $i$ chooses an action 
 $a \in A(I)$ uniformly at random.
-Letting $q = (I,a)$, we construct a loss for the instance at $I$ with the following form,
+Letting $q = (I,a)$, we construct a loss for $\PW(I)$ with the following form,
 \begin{equation}
 \label{eq:loss}
 l_{I,a} = \frac{\max_{a' \in A(I)} u_i(\bx_{i \rightarrow g_{(I,a')}}) - u_i(\bx_{i \rightarrow g_q})}{\Delta_{-i}(I)}, \mbox{ where }
@@ -693,7 +667,7 @@ cancel out, leaving the payoffs when reaching $I$. The denominator is the larges
 
 \begin{lemma}
 When using discrete-time SFRD, the update for $q = (I,a)$ from Equation~\ref{eq:dt-sfrd} corresponds to an equivalent update 
-of the PW instance at $I$ for action $a$ with the loss $l_{I,a}$ as defined in Equation~\ref{eq:loss}.
+of $\PW(I)$ with the loss $l_{I,a}$ as defined in Equation~\ref{eq:loss}.
 \end{lemma}
 \begin{proof}
 From Equation~\ref{eq:dt-sfrd}, let $w_i(t) = x_i(q,t)$, we have
@@ -704,22 +678,82 @@ From Equation~\ref{eq:dt-sfrd}, let $w_i(t) = x_i(q,t)$, we have
   & \Rightarrow & w_i(t+1) = w_i(t) (1 - \frac{\Delta_{-i}(I)}{\max_{a' \in A(I)} u_i(\bx_{i \rightarrow g_{(I,a')}})} l_{I,a}).
 \end{eqnarray*}
 The second and fourth lines follow because scaling by a constant at $I$ does not affect the distribution at $I$ due to normalization.
-The third line substitutes $u_i(\bx_{i \rightarrow g_q})$ from Eq~\ref{eq:loss}. 
+The third line substitutes $u_i(\bx_{i \rightarrow g_q})$ from Eq.~\ref{eq:loss}. 
 Here, $\eta = \Delta_{-i}(I) / ({\max_{a' \in A(I)} u_i(\bx_{i \rightarrow g_{(I,a')}})})$ and $0 \le \eta \le 1$, since $\Delta_{-i}(I)$
 is a payoff range, subtracts the minimum value at $I$, 
 and ${\max_{a' \in A(I)} u_i(\bx_{i \rightarrow g_{(I,a')}})}$ includes terms for $(h,z) \not\in Z_I$.
 \end{proof}
 
-This result shows that discrete-time SFRD also minimizes the individual regret of the PW learner at $I$. We now show that these individual 
-regrets are, in fact, forms of counterfactual regrets. As in the original work, we show that the combination of these particular PW learners 
-minimize overall regret. Hence, discrete-time SFRD minimizes overall regret. 
+This result shows that discrete-time SFRD also minimizes the individual regret of the $\PW(I)$. 
+We now show that these individual 
+regrets are, in fact, forms of counterfactual regrets. 
+First, we relate $g(\bx_i)$ to counterfactual values. 
+
+
+\begin{lemma}
+\label{lem:rel-cfv}
+Given a realization profile $\bx_i$ for player $i \in N$ and its equivalent behavioral strategy $\sigma_i$, letting 
+$q = (I,a)$, using $v_i(I,a)$ as defined in Eq.~\ref{eq:cfv} and any $\sigma_{-i}$:
+\[  \max_{a' \in A(I)} u_i(\bx_{i \rightarrow g(I,a')}) - u_i(\bx_{i \rightarrow g_q}) 
+  = \max_{a' \in A(I)} v_i(I,a') - v_i(I,a).
+\]
+\end{lemma}
+\begin{proof}
+First, since $q = (I,a)$ and $a, a' \in A(I)$, observe that the realization weights for 
+profiles $\bx_{i \rightarrow g(I,a')}$ and $\bx_{i \rightarrow g_q}$ are identical 
+for all $q$ leading to terminal histories outside $Z_I$. Therefore, the left-hand side 
+can be rewritten as 
+\begin{eqnarray*}
+  &   & \max_{a' \in A(i)} \sum_{(ha',z) \in Z_i} \pi^{\sigma}_i(h) \pi^{\sigma}_i(ha,z) \pi^{\sigma}_{-i}(z) u_i(z) \\
+  &   & - \sum_{(h,z) \in z_i} \pi^{\sigma}_i(h) \pi^{\sigma}_i(ha,z) \pi^{\sigma}_{-i}(z) u_i(z) \\
+  & = & \max_{a' \in A(i)} \sum_{(ha',z) \in Z_i} \pi^{\sigma_i}(ha,z) \pi^{\sigma}_{-i}(z) u_i(z) \\
+  &   & - \sum_{(h,z) \in z_i} \pi^{\sigma}_i(ha,z) \pi^{\sigma}_{-i}(z) u_i(z) \\
+  & = & \max_{a' \in A(i)} v_i(I,a') - v_i(I,a).
+\end{eqnarray*}
+The second line follows from the fact that $\sigma_i(h) = 1$ for $h \in I$ and distributions below $I$ are unchanged
+by Eq.~\ref{eq:gdef}. The last line follows from the definition of counterfactual value in Eq.~\ref{eq:cfv}.
+\end{proof}
+
+Define \defword{immediate counterfactual regret} for player $i$ at time $T$ as in~\cite{CFR}:
+\begin{equation}
+\label{eq:cfr}
+R^T_{i,imm} = \frac{1}{T} \max_{a \in A(I)} \left( \sum_{t=1}^T v_i(I, a) - v_i(I, \sigma^t) \right),
+\end{equation}
+where $\sigma^t$ is the profile used by both players at time $t$. 
+As in the original work, we show that the combination of PW learners, $\{ \PW(I) | I \in \cI \}$,
+minimizes overall regret. Hence, discrete-time SFRD minimizes overall regret. 
 
 \begin{theorem}
-The big theorem.
+\label{thm:cfr}
+Let $R^T_i$ be overall regret for player $i$, and $\bar{R}^T_i = R^T / T$. The overall regret of  
+discrete-time SFRD is bounded by: 
+\[
+\bar{R}^T_i \le \frac{\Delta_{-i}}{T} \sum_{ I \in \cI_i} \max_{a \in A(I)} \sum_{t=1}^T ( l^t_{I,\sigma} - l^t(I,a) ) 
+            \le 2|\cI| \frac{\ln |A_i|}{\sqrt{T}},  \]
+where $\Delta_{-i} \le | \cI_i |$, $l^t_{I,\sigma} = \sum_{a \in A(I)} \sigma(I,a) l^t(I,a)$, and 
+$|A_i| = \max_{I \in \cI} |A(I)|$.
 \end{theorem}
 \begin{proof}
-The big proof.
+For $I \in \cI_i$, $v_i(I,a) - v_i(I,\sigma)$
+\begin{eqnarray*}
+ & = &   (\max_{a' \in A(I)} v(I,a') - \Delta_{-i}(I) l_{I,a})\\
+ &   & - \sum_{a \in A(I)} \sigma(I,a) \left( \max_{a' \in A(I)} v_i(I,a') - \Delta_{-i}(I) l_{I,a} \right) \\ 
+ & = & - \Delta_{-i}(I) l_{I,a} + \sum_{a \in A(I)} \sigma_i(I,a) \Delta_{-i}(I) l_{I,a}\\
+ & = & \Delta_{-i}(I) ( l_{I,\sigma} - l_{I,a} ) 
+\end{eqnarray*}
+The first two lines are by Eq~\ref{eq:loss} and Lemma~\ref{lem:rel-cfv}.
+The third line is since $\sum_{a \in A(I)} \sigma_i(I,a) = 1$. Substituting into into Eq.~\ref{eq:cfr}, 
+\begin{eqnarray*} 
+R^T_{i,imm}(I) & \le & \frac{1}{T}           \max_{a \in A(I)} \left( \sum_{t=1}^T \Delta^t_{-i}(I) (l^t_{I,\sigma} - l^t_{I,a}) \right) \\
+               & \le & \frac{\Delta_{-i}}{T} \max_{a \in A(I)} \left( \sum_{t=1}^T (l^t_{I,\sigma} - l^t_{I,a}) \right), 
+\end{eqnarray*}
+where $\Delta_{-i} = \max_{1 \le t \le T} \Delta^t_{-i}(I)$. The rest of the proof follows by Theorems 3 and 4 of \cite{CFR}, 
+except that the regret bound for Polynomial Weights is used instead of the one for regret-matching.  
+
 \end{proof}
+
+
+
 
 
 
@@ -729,13 +763,46 @@ The big proof.
 \section{Experiments}
 \label{sec:exp}
 
-\begin{itemize}
-\item first evidence of convergence in 2P Kuhn
-\item Difference between average and current strategies; compare to Rich's findings
-\item Compare to 3P Kuhn paper.. does it find the "good" equilibrium?
-\item Compare to Abou Risk.. given same number of iterations, does it get closer to equilibrium than CFR?
-\item Bigger, more challenging domain?
-\end{itemize}
+%\begin{itemize}
+%\item first evidence of convergence in 2P Kuhn
+%\item Difference between average and current strategies; compare to Rich's findings
+%\item Compare to 3P Kuhn paper.. does it find the "good" equilibrium?
+%\item Compare to Abou Risk.. given same number of iterations, does it get closer to equilibrium than CFR?
+%\item Bigger, more challenging domain?
+%\end{itemize}
+
+
+\subsection{Kuhn Poker}
+
+% refer to Hoen et. al, abou risk, rich gibson
+
+Kuhn poker is a simplified poker game originally proposed by Harold W. Kuhn~\cite{Kuhn50}. 
+Kuhn poker has been analyzed analytically by Kuhn and used as a testbed in studies in 
+algorithms and multiagent systems~\cite{hoehn05,AbouRisk10,Szafron13Kuhn}.  
+
+Generalized $n$-player Kuhn poker, KP$(n)$ consists of a deck with $n+1$ cards $\{ 1, 2, \cdots, n, n+1 \}$. 
+Every player starts with 2 chips. At the start of the game, each player antes one of their chips placing it
+into a central pot of $p = n$ chips. 
+Then, chance deals one card to each player. 
+The game starts with Player 1 and proceeds sequentially to the next player that is not eliminated. 
+A player may bet (if they have a chip) or pass. 
+To bet, a player puts the chip into the pot: $p \leftarrow p + 1$. 
+A player can fold by passing when $n < p < 2r$ where $r$ is the number of remaining players, \ie~players that have not been eliminated. 
+If a player folds, they are eliminated and receive a payoff of -1 for the chip lost. 
+The game proceeds until either (i) all but one player has folded, or (ii) $p = n$ and everyone has passed or all the 
+remaining players have run out of chips. 
+In the former case, the remaining player wins the pot. In the latter case, the 
+remaining player with the highest-valued card wins the pot. In all cases, a player's payoff is the number of chips
+they end up with minus their 2 starting chips. 
+
+Kuhn's original game used $n = 2$. The form of every equilibrium strategy for KP$(2)$ was derived analytically
+by Kuhn and and used in a number of studies, \eg~\cite{hoehn05}. An $\epsilon$-equilibrium, with $\epsilon = 0.0044563$ was 
+found experimentally using counterfactual regret minimization in KP$(3)$~\cite{AbouRisk10}. 
+Recently, a family of parameterized eqilibrium profiles were analytically derived for KP$(3)$~\cite{Szafron13Kuhn}.
+While replicator dynamics have been applied to abstractions of complex Poker games~\cite{ponsen09b},
+to the best of our knowledge KP$(n), n > 3$ has not yet been analyzed.  
+
+
 
 
 \section{Conclusion}
