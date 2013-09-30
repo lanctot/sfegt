@@ -233,9 +233,10 @@ In this paper, we generalize the sequence-form replictor dynamics to more than t
 find equilibrium points in general $n$-player games as well. 
 We show a link between sequence-form replicator dynamics and regret minimization and use it to derive formal guarantees
 of convergence in two-player constant-sum games.
-We provide the first empirical evaluation of sequence-form replicator dynamics for both two-player and $n$-player
-games.
-Finally, we evaluate the stability of the solutions, relating the to equilibrium refinements such as trembling-hand perfect equilibria.
+We provide the first empirical evaluation of sequence-form replicator dynamics in $n$-player Kuhn poker with two, three, 
+and four players. 
+Finally, we evaluate the stability of the solutions in practice, \todo{showing something important}. 
+%relating the to equilibrium refinements such as trembling-hand perfect equilibria.
 %Finally, we analyze the stability of the solutions and on equilibrium refinements, such as trembling-hand perfect equilibria. 
 \end{abstract}
 
@@ -324,8 +325,7 @@ We show that in two-player zero-sum games, SFRD corresponds to no-regret learnin
 equilibrium is guaranteed, even if equilibrium points are not stable. 
 We present the first empirical evaluation of SFRD and, in particular, the first evidence confirming the convergence 
 of SFRD to a Nash equilibrium in two-player games, both in theory (for two player zero-sum) and practice (for $n$ players).
-Finally, we empirically evaluate the stability of the solutions and show that stable rest points correspond to 
-trembling-hand perfect equilibria.
+Finally, we empirically evaluate the stability of the solutions and show \todo{something}.
 %TODO: make sure we actually do this!
 
 To the best of our knowledge, this work constitutes the first use of the sequence-form representation for games 
@@ -337,7 +337,7 @@ with $n > 2$ players.
 %Replicator dynamics.
 %Extensive-form games. 
 %Sequence form representation.
-%Kuhn Poker. 
+%Kuhn Poker (moved to experiments section)
 
 In this section we define the relevant game-theoretic terminology that forms the basis
 of our analysis. The notation used here is based on~\cite{OsbRub94}. For a comprehensive introduction and
@@ -391,7 +391,9 @@ then the strategy is called \defword{pure}.
 A \defword{mixed} strategy is a single explicit distribution over pure strategies. 
 Given a profile $\sigma$, we denote the probability of reaching a terminal state $z$ under $\sigma$ as 
 $\pi^\sigma(z) = \prod_{i \in N} \pi_i(z)$, where each $\pi_i(z)$ is a product of probabilities of the actions taken 
-by player $i$ in $X_i(z)$. Define $\Sigma_i$ to be the set of behavioral strategies for player $i$. 
+by player $i$ in $X_i(z)$. We also refer to $\pi^{\sigma}_i(h,z)$ and $\pi^{\sigma}(h,z)$ to refer to the production 
+of only those probabilities along the sequence from $h$ to $z$, where $h \sqsubset z$.
+Define $\Sigma_i$ to be the set of behavioral strategies for player $i$. 
 As is convention, $\sigma_{-i}$ and $\pi_{-i}^\sigma$ refer to player $i's$ opponents' strategies and products (including chance's).
 An \defword{$\epsilon$-Nash equilibrium} profile is a set of $\sigma_i$ for $i \in N$ such that the benefit to switching to some 
 alternative $\sigma_i'$,
@@ -580,7 +582,7 @@ The remaining elements are equal by Eq.~\ref{eq:gdef} and \cite[Lemma 6]{Gatti13
 \noindent We now discuss realization equivalence with $n$ players. 
 \begin{definition}
 Two strategies $\sigma_i$ and $\sigma_i'$ are \defword{realization equivalent} if 
-$\forall h \in H, \forall \sigma_{-i} \in \Sigma_{-i}, \pi^{\sigma}_i(h) = \pi^{\sigma'}(h)$. 
+$\forall h \in H, \forall \sigma_{-i} \in \Sigma_{-i}, \pi^{\sigma}(h) = \pi^{\sigma'}(h)$. 
 \end{definition}
 In other words, every history is reachable with the same probability given an arbitrary fixed opponent profile. 
 Due to perfect recall, every mixed strategy has an equivalent behavioral strategy~\cite{Kuhn53}. 
@@ -617,6 +619,8 @@ Then, similarly to above the utilities can be decomposed into a dot product of v
 \noindent The vectors on left are realization equivalent by the statement of the theorem. So, this 
 is only true if the vectors on the right are realization equivalent. The right-side vectors are realization equivalent 
 by \cite[Lemma 9]{Gatti13Efficient} since there is no dependence on the opponents nor number of players. 
+
+\todo{check over this proof again}
 \end{proof}
 
 \begin{theorem}
@@ -772,9 +776,11 @@ make sure $\eta$ can be changed each trial in the polynomial weights algorithm?}
 %\item Compare to Abou Risk.. given same number of iterations, does it get closer to equilibrium than CFR?
 %\item Bigger, more challenging domain?
 %\end{itemize}
+ 
+In this section, we provide the first empirical evaluation of sequence-form replicator dynamics. 
+We choose to focus on a generalization of a well-studied game in multi-agent systems, Kuhn poker. 
 
-
-\subsection{Kuhn Poker}
+\subsection{Generalized Multiplayer Kuhn Poker}
 
 % refer to Hoen et. al, abou risk, rich gibson
 
@@ -803,6 +809,7 @@ found experimentally using counterfactual regret minimization in KP$(3)$~\cite{A
 Recently, a family of parameterized eqilibrium profiles were analytically derived for KP$(3)$~\cite{Szafron13Kuhn}.
 While replicator dynamics have been applied to abstractions of complex Poker games~\cite{ponsen09b},
 to the best of our knowledge KP$(n), n > 3$ has not yet been analyzed.  
+
 
 
 
