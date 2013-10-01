@@ -756,13 +756,13 @@ where $\Delta_{-i} = \max_{1 \le t \le T} \Delta^t_{-i}(I)$. The rest of the pro
 except that the regret bound for Polynomial Weights is used instead of the one for regret-matching.  
 \end{proof}
 
-\todo{fix bound to be exact and/or somehow include $\eta$; 
-make sure $\eta$ can be changed each trial in the polynomial weights algorithm?}
-
-
-
-
-
+\todo{several problems at the moment: 
+\begin{itemize}
+\item would be ideal if the bound was exact and not just asymptotic or $O(N)$
+\item $\eta$ is different each iteration at $\PW(I)$ every iteration -- need an explicit bound for this
+\item for PW, necessary requirement is $\eta \le \frac{1}{2}$, need to show this is true
+\end{itemize}
+}
 
 %\subsection{Stability and Trembling-Hand Perfection}
 
