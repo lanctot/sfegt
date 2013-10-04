@@ -61,6 +61,7 @@
 \newcommand{\cI}{\mathcal{I}}
 \newcommand{\cC}{\mathcal{C}}
 \newcommand{\PW}{\mbox{PW}}
+\newcommand{\BR}{\mbox{BR}}
 \newcommand{\defword}[1]{\textbf{\boldmath{#1}}}
 \newcommand{\ie}{{\it i.e.}}
 \newcommand{\eg}{{\it e.g.}}
@@ -321,8 +322,8 @@ that can be represent general extensive games with much less computational requi
 normal forms. 
 
 In this paper, we first extend SFRD to $n$-player games and show that properties are conserved with more than two players. 
-We show that in two-player zero-sum games, SFRD corresponds to no-regret learning and hence convergence to an 
-equilibrium is guaranteed, even if equilibrium points are not stable. 
+We show that SFRD leads is equivalent to a specific form of no-regret learning and hence convergence to an 
+equilibrium is guaranteed in two-player zero-sum games, even if equilibrium points are not stable. 
 We present the first empirical evaluation of SFRD and, in particular, the first evidence confirming the convergence 
 of SFRD to a Nash equilibrium in two-player games, both in theory (for two player zero-sum) and practice (for $n$ players).
 Finally, we empirically evaluate the stability of the solutions and show \todo{something}.
@@ -400,9 +401,9 @@ alternative $\sigma_i'$,
 %that are the arguments of maximization and minimization in
 \begin{equation}
   \label{eq:ne}
-  \max_{\sigma_i' \in \Sigma_i} \left\{ \sum_{z \in Z} \pi_i^{\sigma'}(z) \pi_{-i}^\sigma(z) u_i(z) \right\} - u_i(z) \le \epsilon_i
+  \max_{\sigma_i' \in \Sigma_i} \left\{ \sum_{z \in Z} \pi_i^{\sigma'}(z) \pi_{-i}^\sigma(z) u_i(z) \right\} - u_i(\sigma) \le \epsilon
 \end{equation}
-holds for all players $i$ and $\epsilon = \max_{i \in N} \epsilon_i$. When $\epsilon = 0$, the profile is simply called a Nash equilibrium. 
+holds for all players $i \in N$. When $\epsilon = 0$, the profile is simply called a Nash equilibrium. 
 In this paper, we assume payoffs $0 \le u_i(z) \le 1$. Payoffs in games outside this range can be shifted by a constant and 
 then scaled by the payoff range without changing the set of strategies that optimize Equation~\ref{eq:ne}.
 When $|N| = 2$ and $u_1(z) + u_2(z) = k$ for all $z \in Z$, 
@@ -439,14 +440,14 @@ Discrete-time SFRD starts with an arbitrary strategy $\bx_i$ and, at each time s
 choices $q \in Q_i$, updates the weights using
 \begin{equation}
 \label{eq:dt-sfrd}
-x_i(q,t+1) = x_i(q,t) \cdot \frac{u_i(\bx_{i \rightarrow g_{q}})}{u_i(\bx)},
+x_i(q,t+1) = x_i(q,t) \frac{u_i(\bx_{i \rightarrow g_{q}})}{u_i(\bx)},
 \end{equation}
 where $\bx_{i \rightarrow g_q}$ corresponds to the realization profile $\bx$ except player $i$ uses $g_q(\bx_i)$ instead of $\bx_i$. 
 Here, $g_q(\bx_i)$ returns a transformed realization plan that is explained below. 
 Continuous-time SFRD is described by the differential equation for all players $i \in N$ and all $q \in Q_i$:
 \begin{equation}
 \label{eq:ct-sfrd}
-\dot{x}_i(q,t) = x_i(q,t) \cdot u_i(\bx_{i \rightarrow \Delta g_{q}}),
+\dot{x}_i(q,t) = x_i(q,t) u_i(\bx_{i \rightarrow \Delta g_{q}}),
 \end{equation}
 where $\bx_{i \rightarrow \Delta g_q}$ corresponds to the profile $\bx$ except player $i$ uses $\Delta g_q(\bx_i) = g_q(\bx_i) - \bx_i$. 
 
@@ -559,9 +560,9 @@ we rewrite the utility $u_i(\bx_{i \rightarrow g_q}, t)$ using Equation~\ref{eq:
 components belonging to $i$ and to the opponents $-i$: 
 \begin{eqnarray*}
 %x & y & z \\ 
-u_i(\bx_{i \rightarrow g}) & = & ~~g_q(\bx_i, q_1') \cdot u_i(q_1', \ldots, q_n') \prod_{q_k', k \not= i} x_k(q_k') \\
-                           &   & +~g_q(\bx_i, q_1'') \cdot u_i(q_1'', \ldots, q_n'') \prod_{q_k'', k \not= i} x_k(q_k'') \\
-                           &   & +~g_q(\bx_i, q_1''') \cdot u_i(q_1''', \ldots, q_n''') \prod_{q_k''', k \not= i} x_k(q_k''') \\
+u_i(\bx_{i \rightarrow g}) & = & ~~g_q(\bx_i, q_1') u_i(q_1', \ldots, q_n') \prod_{q_k', k \not= i} x_k(q_k') \\
+                           &   & +~g_q(\bx_i, q_1'') u_i(q_1'', \ldots, q_n'') \prod_{q_k'', k \not= i} x_k(q_k'') \\
+                           &   & +~g_q(\bx_i, q_1''') u_i(q_1''', \ldots, q_n''') \prod_{q_k''', k \not= i} x_k(q_k''') \\
                            &   & ~~\cdots \\
                            & = & ~~\bg_q(\bx_i) \cdot \bu(\bx_{-i}),
 \end{eqnarray*}
@@ -650,7 +651,7 @@ Section~\ref{sec:exp}.
 Similar to~\cite{Klos10Evolutionary} we relate Polynomial Weights (PW) and replicator dynamics; 
 however, unlike \cite{Klos10Evolutionary} we show that SFRD corresponds to regret minimization rather than analyzing the 
 evolutionary dynamics of PW. In particular, SFRD corresponds to counterfactual regret minimization where PW replaces 
-regret-matching as the underlying no-regret learner at each information set. 
+regret matching as the underlying no-regret learner at each information set. 
 
 Every $I \in \cI_i$ has its own individual no-regret learner, denoted $\PW(I)$. 
 Denote $w_{I,a}(t)$ as the weight of $\PW(I)$ at $I$ for action $a \in A(I)$. 
@@ -742,18 +743,18 @@ $|A_i| = \max_{I \in \cI_i} |A(I)|$.
 For $I \in \cI_i$, $v_i(I,a) - v_i(I,\sigma)$
 \begin{eqnarray*}
  & = &   (\max_{a' \in A(I)} v(I,a') - \Delta_{-i}(I) l_{I,a})\\
- &   & - \sum_{a \in A(I)} \sigma(I,a) \left( \max_{a' \in A(I)} v_i(I,a') - \Delta_{-i}(I) l_{I,a} \right) \\ 
- & = & - \Delta_{-i}(I) l_{I,a} + \sum_{a \in A(I)} \sigma_i(I,a) \Delta_{-i}(I) l_{I,a}\\
+ &   & - \sum_{a'' \in A(I)} \sigma(I,a'') \left( \max_{a' \in A(I)} v_i(I,a') - \Delta_{-i}(I) l_{I,a} \right) \\ 
+ & = & - \Delta_{-i}(I) l_{I,a} + \sum_{a'' \in A(I)} \sigma_i(I,a'') \Delta_{-i}(I) l_{I,a}\\
  & = & \Delta_{-i}(I) ( l_{I,\sigma} - l_{I,a} ) 
 \end{eqnarray*}
 The first line follows from Eq~\ref{eq:loss} and Lemma~\ref{lem:rel-cfv}.
-The second line follows since $\sum_{a \in A(I)} \sigma_i(I,a) = 1$. Substituting into Eq.~\ref{eq:cfr} leads to
+The second line follows since $\sum_{a'' \in A(I)} \sigma_i(I,a') = 1$. Substituting into Eq.~\ref{eq:cfr} leads to
 \begin{eqnarray*} 
 \bar{R}^T_{i,imm}(I) & \le & \frac{1}{T}           \max_{a \in A(I)} \left( \sum_{t=1}^T \Delta^t_{-i}(I) (l^t_{I,\sigma} - l^t_{I,a}) \right) \\
                & \le & \frac{\Delta_{-i}}{T} \max_{a \in A(I)} \left( \sum_{t=1}^T (l^t_{I,\sigma} - l^t_{I,a}) \right), 
 \end{eqnarray*}
 where $\Delta_{-i} = \max_{1 \le t \le T} \Delta^t_{-i}(I)$. The rest of the proof follows by Theorems 3 and 4 of \cite{CFR}, 
-except that the regret bound for Polynomial Weights is used instead of the one for regret-matching.  
+except that the regret bound for Polynomial Weights is used instead of the one for regret matching.  
 \end{proof}
 
 \todo{several problems at the moment: 
@@ -778,7 +779,31 @@ except that the regret bound for Polynomial Weights is used instead of the one f
 %\end{itemize}
  
 In this section, we provide the first empirical evaluation of sequence-form replicator dynamics. 
-We choose to focus on a generalization of a well-studied game in multi-agent systems, Kuhn poker. 
+
+In our experiments, we use two separate metrics to evaluate the practical behavior of sequence-form replicator dynamics. 
+The first is the observed rate of convergence to $\epsilon$-Nash equilibrium. This is done by computing the smallest 
+$\epsilon$ satisfying Equation~\ref{eq:ne}. To compute $\epsilon$ for some profile $\sigma$ in an $n$-player game, we first
+compute the expected values $u_i(\sigma)$ to each player. 
+Then, for each player $i$ we compute a best response to $\sigma_{-i}$, $\BR(\sigma_{-i})$, then 
+$\epsilon_i = u_i(\BR(\sigma_{-i}), \sigma_{-i}) - u_i(\sigma)$. Then, $\epsilon = \max_{i \in N} \epsilon_i$. 
+The second metric is how well the resulting strategy $\sigma$ performs against a fixed baseline player. Our baseline player 
+chooses an action $a \in A(I)$ uniformly at random, i.e. with probability $1/|A(I)|$. Specifically, denote 
+$b_i$ as the baseline for player $i$, $b = (b_1, b_2, \ldots, b_n)$, and $u_i(b)$ as the expected value to player $i$
+if all players play the baseline strategy. The {\it overall performance} of some profile $\sigma$,  is a measure of how 
+much the players prefer to use their $\sigma_i$ to play against the baseline opponents than $b_i$:
+\begin{equation}
+\mbox{Perf}(\sigma) = \sum_{i \in N} u_i(\sigma_i, b_{-i}) - u_i(b).
+\end{equation}
+
+Under both evaluation metrics, we analyze the evolution of the {\it current strategies} at time $t$, $\bx(t)$, as well 
+as the {\it average strategies} up to time $t$, $\bar{x}(t) = \sum_{j=1}^t \bx(t)$. When minimizing regret in 
+two-player zero-sum games, the strategy that converges to an equilibrium\footnote{This is also true in, e.g., fictitious play and other self-play learning algorithms~\cite{FudLev98}. 
+Note that the average strategies are also sometimes referred to as {\it empirical frequency of play}.} is $\bar{\bx}(t)$. 
+Despite this, and unlike when $n = 2$, 
+in multiplayer $(n > 2)$ setting there is preliminary evidence that using the current strategies can filter out dominated actions
+and work better in practice~\cite{Gibson13domination}. 
+
+We focus on discrete-time replicator dynamics in a generalization of a well-studied game in multi-agent systems research: Kuhn poker. 
 
 \subsection{Generalized Multiplayer Kuhn Poker}
 
@@ -804,13 +829,79 @@ remaining player with the highest-valued card wins the pot. In all cases, a play
 they end up with minus their 2 starting chips. 
 
 Kuhn's original game used $n = 2$. The form of every equilibrium strategy for KP$(2)$ was derived analytically
-by Kuhn and and used in a number of studies, \eg~\cite{hoehn05}. An $\epsilon$-equilibrium, with $\epsilon = 0.0044563$ was 
-found experimentally using counterfactual regret minimization in KP$(3)$~\cite{AbouRisk10}. 
+by Kuhn and and used in a number of studies, \eg~\cite{hoehn05}. 
+The expected value to the first player if all players play equilibrium strategies is $-1/18$. 
+In KP$(3)$, an $\epsilon$-equilibrium with $\epsilon = 0.0044563$ was 
+found experimentally using standard counterfactual regret minimization~\cite{AbouRisk10}. 
 Recently, a family of parameterized eqilibrium profiles were analytically derived for KP$(3)$~\cite{Szafron13Kuhn}.
 While replicator dynamics have been applied to abstractions of complex Poker games~\cite{ponsen09b},
 to the best of our knowledge KP$(n > 3)$ has not yet been analyzed.  
 
+%\subsubsection{Implementation Considerations}
 
+In our implementation, a shifted payoff function $u_i'(z) = u_i(z) + 3$ is used to ensure that all the utilities are positive
+and that Equation~\label{eq:dt-sfrd} is well-defined. However, in our results we present utilities as described by the original
+game as described above.
+
+%Also, to reduce the problems encountered by numerical instability, the strategies are occasionally {\it purified}: any realization
+%weight whose value becomes smaller than a threshold ($10^{-50}$) is set to 0, as well as all its children weights. 
+%The excess weight is evenly redistributed among the other non-zero actions and their children. 
+
+\subsection{Two-Player Experiments}
+
+\begin{figure}[t]
+\begin{center}
+\hspace{-0.5cm}\includegraphics[scale=0.7]{figs/sfrd2-conv} 
+
+\hspace{-0.5cm}\includegraphics[scale=0.7]{figs/sfrd2-curperf}
+\end{center}
+\caption{Top: convergence rate and overall performance of average strategy in KP$(2)$. Bottom: overall performance
+of the current strategy. In both cases, the vertical axis represents utility. \label{fig:sfrd2-conv}}
+\end{figure}
+
+We first analyze the behavior of SFRD in two-player Kuhn poker. 
+In two-player zero-sum games, 
+a common way to compute distance to an equilibrium is to use exploitability. Since $u_2(\sigma) = -u_1(\sigma)$, 
+the gap in Equation~\ref{eq:ne} is replaced by 
+$\max_{\sigma_1' \in \Sigma_1} u_1(\sigma_1', \sigma_2) + \max_{\sigma_2' \in \Sigma_2} u_2(\sigma_1, \sigma_2')$. 
+Therefore, in the case of two players, we show exploitability. 
+
+The convergence rate and overall performance of the average and current strategy profiles are shown in
+Figure~\ref{fig:sfrd2-conv}. The exploitability quickly drops from to low value within the first few hundred iterations. 
+The values for $t = (100,200,300)$ are $(0.916, 0.171, 0.096)$ to less than $0.001$ at $t = 100000$. 
+The average performance slowly rises from $-0.25$ initially to $0.109$ at $t = 100000$. The performance of the 
+current strategy is much noisier, but slowly seems to concentrate to a neighborhood around $0.1$ as well, implying that the 
+dynamics lead to significant switches between alternatives. 
+
+\subsection{Multiplayer Experiments}
+
+\begin{figure*}[t]
+\begin{center}
+\begin{tabular}{cc}
+\includegraphics[scale=0.7]{figs/sfrd3-conv}    & \includegraphics[scale=0.7]{figs/sfrd4-conv} \\
+\includegraphics[scale=0.7]{figs/sfrd3-perf}    & \includegraphics[scale=0.7]{figs/sfrd4-perf} \\
+\end{tabular}
+\end{center}
+\caption{Convergence rate and overall performance in KP$(3)$ (left) and KP$(4)$ (right). 
+The vertical axes represent utility. 
+Epsilon(avg) and Epsilon(cur) represent the convergence rates
+of $\bar{\bx}(t)$ and $\bx(t)$, respectively. \label{fig:sfrd34}}
+\end{figure*}
+
+In this section, we present experiments for KP$(3)$ and KP$(4)$.  The convergence rates and performances are shown in 
+Figure~\ref{fig:sfrd34}.
+
+In KP$(3)$, we notice that again that $\bar{\bx}(t)$ converges to a low value relatively quickly, within 
+a few thousand iterations, reaching $\epsilon \approx 0.007$ at $t = 5000$. Interstingly, unlike 
+the current strategy profile does not seem to be converging closer to Nash equilibrium. This might indicate that the evolution 
+has not found any attracting stable fixed points. From the performance graphs, we see that early on the performance spikes and 
+and then slowly decreases. This could be due the players cooperating to increase the score against the early 
+strategies close to the baseline, which slowly decreases as each player learns to counter the opponents. The current strategy
+performance graph is slightly less noisy than in KP$(2)$, and the average strategy seems to perform better as well. 
+
+In KP$(4)$, again the average profile seems to be converging smoothly closer to equilibrium over time. Like in KP$(3)$, the 
+$\epsilon$ convergence of the current strategies $\bx(t)$ is erratic and unpredictable. As in KP$(4)$, the performance of 
+the current strategy is noiser and seems generally less than the average strategy $\bar{\bx}(t)$. 
 
 
 
