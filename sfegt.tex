@@ -784,15 +784,15 @@ In our experiments, we use two separate metrics to evaluate the practical behavi
 The first is the observed rate of convergence to $\epsilon$-Nash equilibrium. This is done by computing the smallest 
 $\epsilon$ satisfying Equation~\ref{eq:ne}. To compute $\epsilon$ for some profile $\sigma$ in an $n$-player game, we first
 compute the expected values $u_i(\sigma)$ to each player. 
-Then, for each player $i$ we compute a best response to $\sigma_{-i}$, $\BR(\sigma_{-i})$, then 
-$\epsilon_i = u_i(\BR(\sigma_{-i}), \sigma_{-i}) - u_i(\sigma)$. Then, $\epsilon = \max_{i \in N} \epsilon_i$. 
+Then, for each player $i$ we compute a best response to $\sigma_{-i}$, $\sigma^*_i \in \BR(\sigma_{-i})$, and 
+$\epsilon_i = u_i(\sigma^*_i, \sigma_{-i}) - u_i(\sigma)$. Then, $\epsilon = \max_{i \in N} \epsilon_i$. 
 The second metric is how well the resulting strategy $\sigma$ performs against a fixed baseline player. Our baseline player 
 chooses an action $a \in A(I)$ uniformly at random, i.e. with probability $1/|A(I)|$. Specifically, denote 
 $b_i$ as the baseline for player $i$, $b = (b_1, b_2, \ldots, b_n)$, and $u_i(b)$ as the expected value to player $i$
-if all players play the baseline strategy. The {\it overall performance} of some profile $\sigma$,  is a measure of how 
+if all players play the baseline strategies. The {\it overall performance} of some profile $\sigma$,  is a measure of how 
 much the players prefer to use their $\sigma_i$ to play against the baseline opponents than $b_i$:
 \begin{equation}
-\mbox{Perf}(\sigma) = \sum_{i \in N} u_i(\sigma_i, b_{-i}) - u_i(b).
+\mbox{Performance}(\sigma) = \sum_{i \in N} \left( u_i(\sigma_i, b_{-i}) - u_i(b) \right).
 \end{equation}
 
 Under both evaluation metrics, we analyze the evolution of the {\it current strategies} at time $t$, $\bx(t)$, as well 
@@ -901,7 +901,8 @@ has not found any attracting stable fixed points or that the strategies are ``or
 represented by $\bar{\bx}(t)$. 
 From the performance graphs, we see that early on the performance spikes and 
 and then slowly decreases. This could be due the players cooperating to increase the score against the early 
-strategies close to the baseline, which slowly decreases as each player learns to counter the opponents. The current strategy
+strategies close to the baseline, which slowly decreases as each player learns to counter the opponents, 
+eventually stabalizing around $0.615$. The current strategy
 performance graph is noisy as in KP$(2)$, and the performance of the average strategy seems to be higher at first ($t \le 30000$). 
 
 In KP$(4)$, again the average profile seems to be reducing $\epsilon$ smoothly and getting closer to a Nash equilibrium 
