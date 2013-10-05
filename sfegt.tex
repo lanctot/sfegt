@@ -835,7 +835,7 @@ In KP$(3)$, an $\epsilon$-equilibrium with $\epsilon = 0.0044563$ was
 found experimentally using standard counterfactual regret minimization~\cite{AbouRisk10}. 
 Recently, a family of parameterized eqilibrium profiles were analytically derived for KP$(3)$~\cite{Szafron13Kuhn}.
 While replicator dynamics have been applied to abstractions of complex Poker games~\cite{ponsen09b},
-to the best of our knowledge KP$(n > 3)$ has not yet been analyzed.  
+to the best of our knowledge KP$(n > 3)$ has not yet been analyzed.
 
 %\subsubsection{Implementation Considerations}
 
@@ -864,14 +864,16 @@ In two-player zero-sum games,
 a common way to compute distance to an equilibrium is to use exploitability. Since $u_2(\sigma) = -u_1(\sigma)$, 
 the gap in Equation~\ref{eq:ne} is replaced by 
 $\max_{\sigma_1' \in \Sigma_1} u_1(\sigma_1', \sigma_2) + \max_{\sigma_2' \in \Sigma_2} u_2(\sigma_1, \sigma_2')$. 
-Therefore, in the case of two players, we show exploitability. 
+Therefore, in the case of two players, the graphs show exploitability. 
 
 The convergence rate and overall performance of the average and current strategy profiles are shown in
-Figure~\ref{fig:sfrd2-conv}. The exploitability quickly drops from to low value within the first few hundred iterations. 
+Figure~\ref{fig:sfrd2-conv}. The exploitability quickly drops from to low values within the first few hundred iterations. 
 The values for $t = (100,200,300)$ are $(0.916, 0.171, 0.096)$ to less than $0.001$ at $t = 100000$. 
-The average performance slowly rises from $-0.25$ initially to $0.109$ at $t = 100000$. The performance of the 
-current strategy is much noisier, but slowly seems to concentrate to a neighborhood around $0.1$ as well, implying that the 
-dynamics lead to significant switches between alternatives. 
+The average performance slowly but steadily rises from $-0.25$ initially to $0.109$ at $t = 100000$. The performance of the 
+current strategy is much noisier, 
+suggesting that 
+players are switching significantly between alternatives, 
+but slowly seems to concentrate to a neighborhood around $0.1$ as well.
 
 \subsection{Multiplayer Experiments}
 
@@ -892,19 +894,20 @@ In this section, we present experiments for KP$(3)$ and KP$(4)$.  The convergenc
 Figure~\ref{fig:sfrd34}.
 
 In KP$(3)$, we notice that again that $\bar{\bx}(t)$ reaches to a low value of $\epsilon$ relatively quickly, within 
-a few thousand iterations, reaching $\epsilon \approx 0.007$ at $t = 5000$. 
-\todo{What about at 100000? Refer to Risk 2010.}
+a few thousand iterations, \todo{reaching $\epsilon \approx 0.00181$ at $t = 74910$}. 
 Interstingly, unlike 
 the current strategy profile does not seem to be converging closer to a Nash equilibrium. This might indicate that the evolution 
-has not found any attracting stable fixed points. From the performance graphs, we see that early on the performance spikes and 
+has not found any attracting stable fixed points or that the strategies are ``orbitting'' around a fixed point, possibly the one 
+represented by $\bar{\bx}(t)$. 
+From the performance graphs, we see that early on the performance spikes and 
 and then slowly decreases. This could be due the players cooperating to increase the score against the early 
 strategies close to the baseline, which slowly decreases as each player learns to counter the opponents. The current strategy
-performance graph is slightly less noisy than in KP$(2)$, and the average strategy seems to perform better as well. 
+performance graph is noisy as in KP$(2)$, and the performance of the average strategy seems to be higher at first ($t \le 30000$). 
 
 In KP$(4)$, again the average profile seems to be reducing $\epsilon$ smoothly and getting closer to a Nash equilibrium 
-over time. Like in KP$(3)$, the $\epsilon$ convergence of the current strategies $\bx(t)$ is erratic and unpredictable. 
-As in KP$(4)$, the performance of the current strategy is noiser and seems generally less than the average 
-strategy $\bar{\bx}(t)$. 
+over time. Like in KP$(3)$, the $\epsilon$ convergence of the current strategies $\bx(t)$ is erratic. 
+As in KP$(4)$, the performance of the current strategy is seems less than the average 
+strategy $\bar{\bx}(t)$, which is consistent with the KP$(3)$ results. 
 
 \section{Conclusion}
 
