@@ -281,21 +281,21 @@ Replicator dynamics model the interactions and change within large populations o
 
 Evolutionary game theory~\cite{MaynardSmith82,Gintis09} has been used to explain complex interactions in multiagent 
 systems such as population dynamics~\cite{HS98}, animalistic behavior in nature~\cite{MSP73}, and 
-multiagent learning~\cite{Tuyls07What,Tuyls03Selection}. The most popular and widely-studied population dynamic is the
+multiagent learning~\cite{Tuyls07What}. The most popular and widely-studied population dynamic is the
 so-called {\it replicator dynamic}~\cite{TJ78}. Replicator dynamics quantify 
 increases in the proportion of individuals in a population based on their relative fitness levels as determined through 
 payoffs of competitions. Agents with higher fitness replicate more than agents with lower fitness and the resulting 
 process leads to an evolutionary game that models population change. 
 
 Multiagent systems that evolve under replicator dynamics have desirable properties and connections to classical game theory. 
-For example, fixed points of populations under the replicator dynamics correspond to a Nash equilibrium of the underlying normal 
+For example, a fixed point of a population under the replicator dynamics corresponds to a Nash equilibrium of the underlying normal 
 form game and stability of the system can be analyzed using theory of dynamical systems~\cite{FudLev98,Gintis09}. 
 In addition, average payoff of a population increases~\cite{HS98}, dominated strategies do not survive~\cite{Gintis09}, and 
 stable equilibrium points correspond to trembling-hand perfect equlibria~\cite{FudLev98,ShoLB08}.
 
 In the classic setup, the underlying stage game is a symmetric normal-form game. This limits the interaction
 among the agents since payoffs are determined from single decisions made by each agent. In general, the games played among agents 
-can be more complex, such as multi-step games such as extensive-form games. 
+can be more complex, such as multi-step sequences of actions as in extensive-form games. 
 One option is to convert the extensive game to its equivalent normal-form, but this is only possible for very small games. 
 Another option is to heuristically abstract the strategy space~\cite{ponsen09b}, but 
 abstraction is lossy and may lead to loss of desired theoretical properties.
@@ -305,9 +305,9 @@ however the focus has been mainly on subgame-decomposable formalisms such as per
 simultaneous move games. In the fully general setting of imperfect information, the extensive-form game cannot be 
 decomposed into smaller subgames. 
 
-Recently, efficient replicator dynamics have been proposed for the general case of extensive-form stage games with 
+Recently, efficient replicator dynamics have been proposed for the general case of extensive-form games with 
 imperfect information~\cite{Gatti13Efficient}, based on sequence-form representations~\cite{SequenceFormLPs}. 
-In their paper, the authors present discrete and continuous time sequence-form replicator dynamics (SFRD)
+In their paper, the authors introduce discrete and continuous time sequence-form replicator dynamics (SFRD)
 that can be represent general extensive games with much less computational requirements than their 
 normal forms. 
 
@@ -317,8 +317,8 @@ We show that SFRD leads is equivalent to a specific form of no-regret learning a
 equilibrium is guaranteed in two-player zero-sum games, even if equilibrium points are not stable. 
 We present the first empirical evaluation of SFRD and, in particular, the first evidence confirming the convergence 
 of SFRD to a Nash equilibrium in two-player games, both in theory (for two player zero-sum) and practice (for $n$ players).
-We also show that empirical evidence suggesting convergence of average strategies with $n > 2$ players, despite actively 
-changing evolutionary dynamics. 
+We also show empirical evidence suggesting convergence of average strategies with $n > 2$ players, despite persistently 
+active changes to approximate equilibrium selection. 
 
 %TODO: make sure we actually do this!
 
@@ -335,33 +335,34 @@ with $n > 2$ players.
 
 In this section we define the relevant game-theoretic terminology that forms the basis
 of our analysis. The notation used here is based on~\cite{OsbRub94}. For a comprehensive introduction and
-survey of the fundamental topics, see~\cite{ShoLB08,Weiss13}.
+survey of the fundamental topics, see~\cite{ShoLB08}.
 
 % do I need this? don't think so
 %A normal-form game is a one where each agent $i \in N = \{ 1, \ldots, n \}$ 
 %chooses a single \defword{pure strategy} $s_i \in S_i$ simultaneously, where $N$ and $S_i$ are assumed to 
 %be finite. The payoff to each agent when strategy profile $s$ is employed is denoted $u_i(s)$, where $s \in S$, and 
-%$S = S_1 \times S_2 \times \ldots \times S_n$ is the space of pure strategy profiles. 
+%$S = S_1 \times S_2 \times \ldots \times S_n$ is the space of pure strategy profiles.  
 %When $|N| = 2$ these are called {\it matrix games} since the payoffs $u_i(s)$ can be represented as a matrix. 
 %A normal-form game is \defword{symmetric} if and only if $S_i = S_j$ for $i \not= j$. Let $\Sigma_i$ denote the set of 
 %all probability distributions over $S_i$ and $\sigma_i \in \Sigma_i$ a \defword{mixed strategy} for player $i$. 
 %Then, the expected payoff for player $i$ is denoted $u_i(\sigma) = \bE_{s \sim \sigma}[u(s)] = \sum_{s \in S} \sigma(s) u(s)$
 %where $\sigma$ is a mixed profile and $\sigma(s)$ is the probability of playing $s$. 
 
-An extensive-form game models sequential decision making. There are a number of decision-making agents called \defword{players} 
+An extensive-form game models sequential decision making. There are $n$ decision-making agents called \defword{players} 
 $i \in N = \{ 1, \ldots, n \}$. Each player chooses an \defword{action} leading to a sequence of actions called \defword{histories} $h \in H$. 
-A history $z \in Z$, where $Z \subseteq H$, is called a \defword{terminal history} marking the end of the 
-game. At each terminal history $z$ there is a payoff $u_i(z)$ to player $i$. At each nonterminal history $h$, there is a single 
-current player to act, $P: H \backslash Z \rightarrow N \cup \{ c \}$ where $c$ is a special player called \defword{chance}
-(sometimes also called nature) that plays with a fixed stochastic strategy. For example, chance is used to represent die rolls 
+A history $z \in Z$, where $Z \subseteq H$, is called a \defword{terminal history} represents a fully-played game from start to finish. 
+At each terminal history $z$ there is a payoff $u_i(z)$ in $[0,1]$ to each player $i$. At each nonterminal history $h$, there is a single 
+current player to act, determined by $P: H \backslash Z \rightarrow N \cup \{ c \}$ where $c$ is a special player called \defword{chance}
+(sometimes also called nature) that plays with a fixed stochastic strategy. For example, chance is used to represent rolls of dice
 and card draws. The game starts in the empty history, and 
-at each step, given the history $h$, the current player chooses an action $a \in A(h)$ leading to successor history $h' = ha$;
-in this case we call $h$ a \defword{prefix} of $h'$ and denote this relationship by $h \sqsubset h$.
+at each step, given the current history $h$, the current player chooses an action $a \in A(h)$ leading to successor history $h' = ha$;
+in this case we call $h$ a \defword{prefix} of $h'$ and denote this relationship by $h \sqsubset h'$. Also, for all $h,h',h'' \in H$, 
+if $h \sqsubset h'$ and $h' \sqsubset h''$ then $h \sqsubset h''$.
 
 Denote $\cI$ the global information partition with disjoint parts $\cI_i$ for each player $i$. Intuitively, an \defword{information set} 
 $I \in \cI_i$ that belongs to player $i$ represents a state of the game with respect to what player $i$ knows. 
-Formally, $I$ is a set of histories that a player cannot distinguish (due information hidden from that player). For all 
-$h,h' \in I$, $A(h) = A(h')$ and $P(h) = P(h')$; hence sometimes we use $A(I)$ and $P(I)$. 
+Formally, $I$ is a set of histories that a player cannot tell apart (due information hidden from that player). For all
+$h,h' \in I$, $A(h) = A(h')$ and $P(h) = P(h')$; hence, often we use $A(I)$ and $P(I)$. 
 
 We also define the \defword{choice set} of (information set, action) pairs for one player to be
 $Q_i = \{ (I,a) \mid I \in \cI_i, a \in A(I) \} \cup \{ q_{\emptyset} \}$, where $q_{\emptyset}$ is
@@ -378,18 +379,18 @@ Denote $succ_i(I,a)$ the set of immediate successor choices, that is
 all $(I',a')$ such that $X_i(h') = X_i(h) \cdot (I',a')$ where $h \in I, h' \in I'$.
 
 %equilibrium definitions
-A \defword{behavioral strategy} for player $i$ is a mapping from information sets $I \in \cI_i$
-to a probability distribution over the actions $A_i(I)$, denoted by $\sigma_i(I)$. 
+A \defword{behavioral strategy} for player $i$ is a function mapping each information set $I \in \cI_i$
+to a probability distribution over the actions $A(I)$, denoted by $\sigma_i(I)$. 
 If every distribution in the range of this mapping assigns all of its weight on a single action, 
 then the strategy is called \defword{pure}. 
 A \defword{mixed} strategy is a single explicit distribution over pure strategies. 
 Given a profile $\sigma$, we denote the probability of reaching a terminal state $z$ under $\sigma$ as 
 $\pi^\sigma(z) = \prod_{i \in N} \pi_i(z)$, where each $\pi_i(z)$ is a product of probabilities of the actions taken 
-by player $i$ in $X_i(z)$. We also refer to $\pi^{\sigma}_i(h,z)$ and $\pi^{\sigma}(h,z)$ to refer to the production 
+by player $i$ in $X_i(z)$. We also refer to $\pi^{\sigma}_i(h,z)$ and $\pi^{\sigma}(h,z)$ to refer to the product 
 of only those probabilities along the sequence from $h$ to $z$, where $h \sqsubset z$.
 Define $\Sigma_i$ to be the set of behavioral strategies for player $i$. 
 As is convention, $\sigma_{-i}$ and $\pi_{-i}^\sigma$ refer to player $i's$ opponents' strategies and products (including chance's).
-An \defword{$\epsilon$-Nash equilibrium} profile is a set of $\sigma_i$ for $i \in N$ such that the benefit to switching to some 
+An \defword{$\epsilon$-Nash equilibrium} is a set of $\sigma_i$ for $i \in N$ such that the benefit to switching to some 
 alternative $\sigma_i'$,
 %that are the arguments of maximization and minimization in
 \begin{equation}
@@ -409,7 +410,7 @@ due to their worst-case guarantees: different equilibrium strategies result in t
 % explain replicator dynamics
 
 The sequence-form was introduced by Koller, Megiddo and von Stengel as an efficient way to construct
-linear programs and complementarity problems for solving extensive-form games~\cite{SequenceFormLPs}. Rather than using a
+linear programs and complementarity problems for solving extensive-form games with perfect recall~\cite{SequenceFormLPs}. Rather than using a
 game's equivalent normal-form representation, the sequence-form imposes constraints compactly by using the game tree's structure, 
 resulting in an exponentially smaller optimization problem.
 Define a \defword{realization plan}, denoted $\bx_i$, as a mapping from each $q \in Q_i$ to a \defword{realization weight} 
@@ -445,10 +446,10 @@ Continuous-time SFRD is described by the differential equation for all players $
 where $\bx_{i \rightarrow \Delta g_q}$ corresponds to the profile $\bx$ except player $i$ uses $\Delta g_q(\bx_i) = g_q(\bx_i) - \bx_i$. 
 
 The function $g_q(\bx_i)$ modifies $\bx_i$ in the following way. 
-For for all pairs $(I,a) \in X_i(q)$: the action $a$ is always taken (realization weight
+For for all choices $(I,a) \in X_i(q)$: the action $a$ is always taken (realization weight
 set to 1) and actions $b \in A(I), b \not= a$ never taken (realization weight set to 0 and all child weights of $(I,b)$ also set to 0). 
 Every other $q' \in Q_i$ that is not directly off the path of $X_i(q)$ (due to actions taken by opponents or being a longer path than $X_i(q)$),
-$x_i(q')$ is renormalized. 
+$x_i(q')$, is renormalized. 
 In essence, $g_q(\bx_i)$ is a projection of $\bx_i$ to its purest form based on $q$ 
 while still retaining the sequence-form constraints. 
 Let $q = (I,a)$, one can equivalently think of $g_q(\bx_i)$ as the realization plan where player $i$ plays to make choice $q$ 
@@ -471,7 +472,7 @@ the game.
 \subsection{Regret Minimization}
 \label{sec:regmin}
 
-Suppose a algorithm $A$ must choose an action among $K$ alternatives. 
+Suppose algorithm $A$ must choose one action among $K$ possible actions. 
 Associated with each action is a payoff, generated from a distribution or by an adversary. 
 The (possibly randomized) algorithm repeats the process over $T$ trials and collects payoff $u_k^t$ for choosing 
 action $k$ at time $t$. 
@@ -493,11 +494,11 @@ $p_k = w_k / \sum_{k'=1}^K w_k'$. After each trial, the weights are updated usin
 where $l_k$ is a loss incurred from not choosing $k$ on the last step and $\eta$ is a learning rate parameter. 
 Here, $l_{min}$ is the loss of the single best action for a given loss sequence, i.e. the argument optimizing 
 Equation~\ref{eq:regret}. 
-When $\eta \le \frac{1}{2}$, the regret of PW at time $T$ is bounded by $R^T \le \eta Q^T_{min} + \ln K / \eta$, where
+When $\eta \le \frac{1}{2}$, the regret of PW at time $T$ is bounded by $R^T \le \eta Q^T_{min} + (\ln K) / \eta$, where
 $Q^T_{min} = \sum_{t=1}^T(l_{min}^t)^2$.
 
 There are important connections between game theory and regret minimization~\cite{Blum07}. One main result 
-is that in two-player zero-sum games, if every player uses a regret minimization algorithm, and after 
+is that in two-player zero-sum games, if both players use a regret minimization algorithm, and after 
 $T$ trials $R_i^T \le \epsilon$, then the average profile $\bar{\sigma}^T$ converges to a $2\epsilon$-equilibrium.
 
 Counterfactual Regret (CFR) is an notion of regret at the information set level for extensive-form games~\cite{CFR}. 
@@ -508,8 +509,8 @@ $\sigma_{-i}$,
 \label{eq:cfv}
 v_i(I,a) = \sum_{(h,z) \in Z_I} \pi^{\sigma}_{-i}(h) \pi^{\sigma_{I \rightarrow a}}_{i}(h, z) u_i(z),
 \end{equation}
-where $Z_I = \{ (h,z) | z \in Z, h \in I, h \sqsubseteq z\}$, $\sigma_{I \rightarrow a}$ is identical to $\sigma$ except 
-at $I$ action $a$ is taken with probability $1$, and $\pi^\sigma(h,z)$ is the product of probability from $h$ to $z$. 
+where $Z_I = \{ (h,z) | z \in Z, h \in I, h \sqsubset z\}$, and $\sigma_{I \rightarrow a}$ is identical to $\sigma$ except 
+at $I$ action $a$ is taken with probability $1$. 
 The CFR algorithm places a regret minimizer at each $I \in \cI_i$ which treats $v_i(I,a)$ as the payoff for taking action $a$. 
 The main result is that the combination of individual regret minimizers
 combines to minimize overall regret, and hence the average profile is an $2\epsilon$-equilibrium, with $\epsilon \rightarrow 0$
@@ -519,8 +520,8 @@ as $T \rightarrow \infty$.
 
 In this section, we describe new developments and analyses of sequence-form replicator dynamics. 
 First, we show that the extension to $n > 2$ players preserves the theoretical properties proved in the original work. 
-Second, we show that discrete-time SFRD minimizes a form of counterfactual regret and hence the average strategy 
-approaches a Nash equilibrium profile over time in two-player zero-sum games. 
+Second, we show that discrete-time SFRD can minimize a form of counterfactual regret leading to equilibrium convergence guarantees
+in two-player zero-sum games. 
 
 % Hmm, can I do this?
 % - Thirdly, we discuss the stability of the solution and its relationship to extensive-form trembling-hand perfect equilibrium.
@@ -591,8 +592,8 @@ an equivalent behavioral strategy~\cite{SequenceFormLPs}. Therefore, the definit
 other forms by reasoning about their equivalent behavioral forms. 
 
 An important result from~\cite{Gatti13Efficient} is that strategies produced by SFRD are realization equivalent 
-to the standard normal-form replicator dynamics. We reuse the key result (\cite[Lemma 9]{Gatti13Efficient}) 
-in our extension to $n$ players.
+to the standard normal-form replicator dynamics. In our $n$-player analysis, we reuse a key result 
+(\cite[Lemma 9]{Gatti13Efficient}).
 
 \begin{theorem}
 Given some game $G$ with player set $N$, 
@@ -602,19 +603,19 @@ Let $\bx(t)$ be a realization profile and $\bx(t+1)$ a realization profile in $G
 Equation~\ref{eq:dt-sfrd}. Then for all players $i \in N$, $\bx(t+1)$ and $\sigma(t+1)$ are realization equivalent.
 \end{theorem}
 \begin{proof}
-Let $s_i \in S_i$ be a pure strategy for player $i$, and $S_i(q) = \{ s_i | s_i \in S_i, q \in s_i \}$.
-For $q' \in succ_i(q)$, $x_i(q', t) = \sum_{s_i \in S_i(q)} \sigma(s_i)$. 
+Let $s_i \in S_i$ be a pure strategy for player $i$, and $S_i(q) = \{ s_i | s_i \in S_i, q \mbox{ is taken in } s_i \}$.
+For $q' \in succ_i(q)$, $x_i(q', t) = \sum_{s_i \in S_i(q')} \sigma(s_i)$. 
 We need to show that this is also true at time $t+1$. By applying Equation~\ref{eq:dt-sfrd} and standard
 replicator dynamics, this becomes
 \[
   x_i(q',t) \frac{u_i(\bx_{i \rightarrow g_{q'}})}{u(\bx)} 
-= \sum_{s_i \in S_i(q)} \left( \sigma(s_i,t) \frac{u_i(\sigma_{i \rightarrow s_i})}{u(\sigma)} \right)
+= \sum_{s_i \in S_i(q')} \left( \sigma(s_i,t) \frac{u_i(\sigma_{i \rightarrow s_i})}{u(\sigma)} \right)
 \]
 We know that $u(\bx) = u(\sigma)$ by the statement of the theorem, so we can remove these denominators.
 Then, similarly to above the utilities can be decomposed into a dot product of vectors and re-arranged, leading to
 \[
   \bu(\bx_{-i}) \cdot (x_i(q',t)(\bg_{q'}(\bx_i)) 
-= \bu(\sigma_{-i})~\cdot \sum_{s_i \in S_i(q)} \sigma(s_i,t) \boldsymbol\sigma_{i \rightarrow s_i}.
+= \bu(\sigma_{-i})~\cdot \sum_{s_i \in S_i(q')} \sigma(s_i,t) \boldsymbol\sigma_{i \rightarrow s_i}.
 \]
 \noindent The vectors on left are realization equivalent by the statement of the theorem. So, this 
 is only true if the vectors on the right are realization equivalent. The right-side vectors are realization equivalent 
@@ -642,12 +643,13 @@ except $g_q(\bx_i)$ is replaced by $\Delta g_q(\bx_i)$.
 \subsection{Link to CFR Minimization}
 
 In this section we show that discrete-time SFRD (equation~\ref{eq:dt-sfrd}) corresponds to a form of counterfactual 
-regret minimization. As a result, convergence to an equilibrium is guaranteed in two-player zero-sum games, 
-even if the equilibrium point is not stable. We show convergence in practice in the general case in 
-Section~\ref{sec:exp}. 
+regret minimization. As a result, under mild conditions convergence to an equilibrium is guaranteed 
+in two-player zero-sum games, even if the equilibrium point is not stable. 
+%We show convergence in practice in the general case in Section~\ref{sec:exp}. 
 Similar to~\cite{Klos10Evolutionary} we relate Polynomial Weights (PW) and replicator dynamics; 
 however, unlike \cite{Klos10Evolutionary} we show that SFRD corresponds to regret minimization rather than analyzing the 
-evolutionary dynamics of PW. In particular, SFRD corresponds to counterfactual regret minimization where PW replaces 
+evolutionary dynamics of PW. 
+In particular, SFRD corresponds to counterfactual regret minimization where PW replaces 
 regret matching as the underlying no-regret learner at each information set. 
 
 Every $I \in \cI_i$ has its own individual no-regret learner, denoted $\PW(I)$. 
@@ -709,12 +711,13 @@ can be rewritten as
 \begin{eqnarray*}
   &   & \max_{a' \in A(i)} \sum_{(ha',z) \in Z_I} \pi^{\sigma}_i(h) \pi^{\sigma}_i(ha,z) \pi^{\sigma}_{-i}(z) u_i(z) \\
   &   & - \sum_{(h,z) \in Z_I} \pi^{\sigma}_i(h) \pi^{\sigma}_i(ha,z) \pi^{\sigma}_{-i}(z) u_i(z) \\
-  & = & \max_{a' \in A(i)} \sum_{(ha',z) \in Z_I} \pi^{\sigma_i}(ha,z) \pi^{\sigma}_{-i}(z) u_i(z) \\
+  & = & \max_{a' \in A(i)} \sum_{(ha',z) \in Z_I} \pi^{\sigma}_i(ha,z) \pi^{\sigma}_{-i}(z) u_i(z) \\
   &   & - \sum_{(h,z) \in Z_I} \pi^{\sigma}_i(ha,z) \pi^{\sigma}_{-i}(z) u_i(z) \\
   & = & \max_{a' \in A(i)} v_i(I,a') - v_i(I,a).
 \end{eqnarray*}
-The second line follows from the fact that $\sigma_i(h) = 1$ for $h \in I$ and distributions below $I$ are unchanged
-by Eq.~\ref{eq:gdef}. The last line follows from the definition of counterfactual value in Eq.~\ref{eq:cfv}.
+The second line follows from the fact that $\sigma_i(h) = 1$ when $i$ uses $g_q(\bx_i)$ for $h \in I$ and 
+distributions below $I$ are unchanged by Eq.~\ref{eq:gdef}. The last line follows from the definition of 
+counterfactual value in Eq.~\ref{eq:cfv}.
 \end{proof}
 
 Define the \defword{average immediate counterfactual regret} for player $i$ at time $T$ and information set $I$
@@ -725,7 +728,7 @@ as in~\cite{CFR}:
 \end{equation}
 where $\sigma^t$ is the profile used by both players at time $t$. 
 As in the original work, we show that the combination of PW learners over all information sets
-minimizes overall regret. Hence, discrete-time SFRD minimizes overall regret. 
+minimizes overall regret. %Hence, discrete-time SFRD minimizes overall regret. 
 
 \begin{lemma}
 \label{lem:cfr}
@@ -767,7 +770,7 @@ the original proof of Theorem 3 from \cite{CFR}, except with bounded utilities r
 %\noindent Note that $\Delta_{-i}$ is at most equal to the payoff range $ \Delta_i = \max_{z,z' \in Z} ( u_i(z) - u_i(z') )$, which is
 %a constant. 
 There is one more small step before we present our main theorem. The standard Polynomial Weights algorithm uses a fixed 
-learning rate $\eta$, whereas in SFRD, the parameters at $\PW(I)$ may lead to different rates each iteration. 
+learning rate $\eta$, whereas in SFRD the parameters of $\PW(I)$ may be different each iteration. 
 
 \begin{lemma}
 \label{lem:diffrates}
@@ -785,7 +788,7 @@ worst-case bound among all parameters used in the trial.
 %Imagine partitioning the trials into different groups where for each group the trials in the group use some fixed parameter. 
 %In a group, regret is being minimized at some rate. The algorithm could have chosen a different parameter leading to a slower
 %regret rate; $\eta^*$ is then the parameter that leads to the lowest rate out of all all the groups.
-We now present our main result, showing that SFRD minimizes regret:
+\noindent We now present our main result. %showing that SFRD minimizes regret:
 
 %Observe that the regret rate of PW over time is $\bar{R}^T \le \eta^* \sum_{t=1}^T(l_{min}^t)^2 / T + \ln K / {T \eta^*}$. 
 
@@ -858,12 +861,13 @@ much the players prefer to use their $\sigma_i$ to play against the baseline opp
 \end{equation}
 
 Under both evaluation metrics, we analyze the evolution of the {\it current strategies} at time $t$, $\bx(t)$, as well 
-as the {\it average strategies} up to time $t$, $\bar{x}(t) = \sum_{j=1}^t \bx(t)$. When minimizing regret in 
-two-player zero-sum games, the strategy that converges to an equilibrium\footnote{This is also true in, e.g., fictitious play and other self-play learning algorithms~\cite{FudLev98}. 
-Note that the average strategies are also sometimes referred to as {\it empirical frequency of play}.} is $\bar{\bx}(t)$. 
+as the {\it average strategies} up to time $t$, $\bar{\bx}(t) = \sum_{j=1}^t \bx(j)$. When minimizing regret in 
+two-player zero-sum games, the strategy that converges to an equilibrium\footnote{This is also true in, e.g., fictitious play and other self-play learning algorithms~\cite{FudLev98}.} 
+%Note that the average strategies are also sometimes referred to as {\it empirical frequency of play}.} 
+is $\bar{\bx}(t)$. 
 Despite this, and unlike when $n = 2$, 
 in multiplayer $(n > 2)$ setting there is preliminary evidence that using the current strategies can filter out dominated actions
-and even work better in practice~\cite{Gibson13domination}. 
+and work better when minimizing regret~\cite{Gibson13domination}. 
 
 We focus on discrete-time replicator dynamics in a generalization of a well-studied game in multi-agent systems research: Kuhn poker. 
 
@@ -933,12 +937,14 @@ Therefore, in the case of two players, the graphs show exploitability.
 
 The convergence rate and overall performance of the average and current strategy profiles are shown in
 Figure~\ref{fig:sfrd2-conv}. The exploitability quickly drops from to low values within the first few hundred iterations. 
-The values for $t = (100,200,300)$ are $(0.916, 0.171, 0.096)$ to less than $0.001$ at $t = 100000$. 
+The values for $t = (100,200,300)$ are $(0.916, 0.171, 0.096)$ to less than $0.001$, with 
+$u_1(\bx(t)) \approx -0.548$, $u_2(\bx(t)) \approx 0.558$ at $t = 100000$. 
 The average performance slowly but steadily rises from $-0.25$ initially to $0.109$ at $t = 100000$. The performance of the 
 current strategy is much noisier, suggesting that players are switching significantly between alternatives, 
 but slowly seems to concentrate to a neighborhood around $0.1$ as well.
 
 \subsection{Multiplayer Experiments}
+
 
 \begin{figure*}[t]
 \begin{center}
@@ -953,15 +959,38 @@ Epsilon(avg) and Epsilon(cur) represent the convergence rates
 of $\bar{\bx}(t)$ and $\bx(t)$, respectively. \label{fig:sfrd34}}
 \end{figure*}
 
-In this section, we present experiments for KP$(3)$ and KP$(4)$.  Convergence rates and overall performance 
+In this section, we present experiments for KP$(3)$ and KP$(4)$.  Results 
 are shown in Figure~\ref{fig:sfrd34}.
 
-In KP$(3)$, we notice that again that $\bar{\bx}(t)$ reaches to a low value of $\epsilon$ relatively quickly, within 
+%avg 10 dist = 1.28754085822548
+%avg 100 dist = 0.641857547584353
+%avg 1000 dist = 0.189463109516972
+%avg 10000 dist = 0.0262224285388692
+%avg 99980 dist = 0.00266474438804344
+%avg 99990 dist = 0.00266448586920836
+%avg 100000 dist = 0.00266421758751064
+
+%cur 10 dist = 1.15185039370745
+%cur 100 dist = 0.363899160031965
+%cur 1000 dist = 0.311669440927469
+%cur 10000 dist = 0.000222493915802207
+%cur 99980 dist = 1.51017605680845e-06
+%cur 99990 dist = 1.51017605680845e-06
+%cur 100000 dist = 1.51017605680845e-06
+
+In KP$(3)$, we notice again that $\bar{\bx}(t)$ reaches to a low value of $\epsilon$ relatively quickly, within 
 a few thousand iterations, reaching $\epsilon \approx 0.00169$ at $t = 100000$. 
-Interestingly, unlike 
-the current strategy profile does not seem to be converging closer to a Nash equilibrium. This might indicate that the evolution 
+Interestingly, the current strategy profiles do not seem to reduce $\epsilon$ smoothly as the average strategy does. This could be because the evolution 
 has not found any attracting stable fixed points or that the strategies are ``orbiting'' around a fixed point, possibly the one 
-represented by $\bar{\bx}(t)$. 
+being approached by $\bar{\bx}(t)$. We investigated further by comparing the strategies to the known equilibrium set described 
+in~\cite{Szafron13Kuhn}. Specifically, we computed a Euclidean distance between the particular probabilities $\sigma(I,a)$ necessary for 
+all players to minimize their worst-case payoff, for points $t = 10^1, 10^2, 10^3, 10^4, 99980, 99990, 10^5$. These distance values for the average 
+strategy are $(1.288,0.642,0.189,0.026,$ $0.003,0.003,0.003)$ and current strategy are
+$(1.152,0.364,$ $0.312, 0.0002, <10^{-5},  <10^{-5},  <10^{-5})$. This could be because the
+current strategies are switching among the approximate equilibria with different worst-case penalties for making mistakes, 
+and yet maintaining the necessary important values that characterize the equilibrium set.  
+The average strategies seem to focus on reducing $\epsilon$. 
+
 From the performance graphs, we see that early on the performance spikes and 
 and then slowly decreases. This could be due the players cooperating to increase the score against the early 
 strategies close to the baseline, which slowly decreases as each player learns to counter the opponents, 
@@ -969,7 +998,7 @@ eventually stabilizing around $0.615$. The current strategy
 performance graph is noisy as in KP$(2)$, and the performance of the average strategy seems to be higher at first ($t \le 30000$). 
 
 In KP$(4)$, again the average profile seems to be reducing $\epsilon$ smoothly and getting closer to a Nash equilibrium 
-over time, reaching $\epsilon \approx 0.0155$ at $t = 5930$. 
+over time, reaching $\epsilon \approx 0.0093$ at $t = 10000$. 
 Like in KP$(3)$, the $\epsilon$ convergence of the current strategies $\bx(t)$ is erratic. 
 As in KP$(4)$, the performance of the current strategy is seems less than the average 
 strategy $\bar{\bx}(t)$, which is consistent with the KP$(3)$ results. 
@@ -991,11 +1020,10 @@ that SFRD updates are realization-equivalent to standard replicator dynamics
 for $n > 2$ players. Second, SFRD can minimize regret, leading to 
 convergence guarantees in two-player zero-sum games. Finally, we have provided
 the first empirical evaluation of SFRD, showing convergence of average strategies 
-to $\epsilon$-Nash equilibria in practice in Kuhn poker with two, three, and four players.  
+to $\epsilon$-Nash equilibria in Kuhn poker with two, three, and four players.  
 
-In future work, we aim to apply SFRD to larger and more complex games. 
-We aim to further characterize the stability of the resulting strategies. 
-In addition, we hope to provide conditions under which SFRD can produce equilibrium refinements, 
+In future work, we aim to apply SFRD to larger, more complex games and further characterize the stability of the resulting strategies. 
+In addition, we hope to provide conditions that lead to producing equilibrium refinements, 
 such as sequential or trembling-hand perfect equilibria. 
 
 %ACKNOWLEDGMENTS are optional
