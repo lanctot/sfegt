@@ -141,7 +141,7 @@
 % e-mail address with \email.
 % 1st. author
 \alignauthor
-Paper  XXX
+Paper 135
 %Ben Trovato\titlenote{Dr.~Trovato insisted his name be first.}\\
 %       \affaddr{Institute for Clarity in Documentation}\\
 %       \affaddr{1932 Wallamaloo Lane}\\
@@ -660,7 +660,7 @@ regret matching as the underlying no-regret learner at each information set.
 
 Every $I \in \cI_i$ has its own individual no-regret learner, denoted $\PW(I)$. 
 Denote $w_{I,a}(t)$ as the weight of $\PW(I)$ at $I$ for action $a \in A(I)$. 
-The initial weights $w_{I,a}(0) = 1$ for all $(I,a) \in Q_i$. 
+The initial weights $w_{I,a}(1) = 1$ for all $(I,a) \in Q_i$. 
 This leads to a fully-mixed behavioral strategy where at each $I$, player $i$ chooses an action 
 $a \in A(I)$ uniformly at random.
 Let $q = (I,a)$, we construct a loss for $\PW(I)$ with the following form,
@@ -808,16 +808,17 @@ For player $i \in N$, if $\forall I \in \cI_i$, $1 \le t \le T$,
 \]
 then overall regret of discrete-time SFRD is bounded by: 
 \[
-\bar{R}^T \le \frac{2 \Delta_i |\cI_i|}{\eta^* T} \left( \ln{|A_i|} + (\eta^*)^2 Q^T_{min}  \right), 
+\bar{R}^T \le \frac{2 \Delta_i |\cI_i|}{\eta^* T} \left( \ln{|A_i|} + (\eta^*)^2 Q_{min}  \right), 
 \]
-where $Q_{min} = \max_{I \in \cI_i} Q^T_{I,min}, \eta^* = \max_{I \in \cI_i} \eta_I^*,$ and $|A_i| = \max_{I \in \cI_i}|A(I)|$. 
+where $Q_{min} = \max_{I \in \cI_i} Q^T_{I,min}, |A_i| = \max_{I \in \cI_i}|A(I)|,$ and $\eta^*$ is the $\eta^*_I$ for $I \in \cI_i$ 
+that maximizes $Q^T_{I,min}$. 
 \end{theorem}
 \begin{proof}
 Recall the general regret bound of PW from Section~\ref{sec:regmin}. By Lemma~\ref{lem:diffrates}, each individual $\PW(I)$ is 
 bounded by $R^T_{i,imm}(I) \le \eta^*_I Q^T_{I,min} + \ln K / \eta^*_I$. Then, applying the bound to Equation~\ref{eq:pw-immreg}, by Lemma~\ref{lem:cfr}, the overall bound is obtained by summing over all the information sets. 
 \end{proof}
 
-The condition on the parameter $\eta$ of Theorem~\ref{thm:main} will be satisfied for a large class of games and strategies. 
+The condition on the parameter $\eta$ of Theorem~\ref{thm:main} is satisfied for a large class of games and strategies. 
 The numerator is a sum over a subtree. 
 The denominator includes a sum over histories outside $Z_I$, therefore $\eta$ will be very small in most cases. 
 Even if the opponent concentrates all the weight to get to $I$, the sum includes terminal histories for which chance 
@@ -867,14 +868,14 @@ much the players prefer to use their $\sigma_i$ to play against the baseline opp
 \mbox{Performance}(\sigma) = \sum_{i \in N} \left( u_i(\sigma_i, b_{-i}) - u_i(b) \right).
 \end{equation}
 
-Under both evaluation metrics, we analyze the evolution of the {\it current strategies} at time $t$, $\bx(t)$, as well 
-as the {\it average strategies} up to time $t$, $\bar{\bx}(t) = \sum_{j=1}^t \bx(j)$. When minimizing regret in 
+Under both evaluation metrics, we analyze the evolution of the {\it current strategy profile} at time $t$, $\bx(t)$, as well 
+as the {\it average strategy profile} up to time $t$, $\bar{\bx}(t) = \frac{1}{t}\sum_{j=1}^t \bx(j)$. When minimizing regret in 
 two-player zero-sum games, the strategy that converges to an equilibrium\footnote{This is also true in, e.g., fictitious play and other self-play learning algorithms~\cite{FudLev98}.} 
 %Note that the average strategies are also sometimes referred to as {\it empirical frequency of play}.} 
 is $\bar{\bx}(t)$. 
 Despite this, and unlike when $n = 2$, 
-in multiplayer $(n > 2)$ setting there is preliminary evidence that using the current strategies can filter out dominated actions
-and work better when minimizing regret~\cite{Gibson13domination}. 
+in multiplayer $(n > 2)$ setting there is preliminary evidence that suggests using the current strategies 
+works better, in practice, when minimizing standard counterfactual regret~\cite{Gibson13domination}. 
 
 We focus on discrete-time replicator dynamics in a generalization of a well-studied game in multi-agent systems research: Kuhn poker. 
 
@@ -889,13 +890,13 @@ algorithms and multiagent systems~\cite{hoehn05,AbouRisk10,Szafron13Kuhn}.
 Generalized $n$-player Kuhn poker, KP$(n)$ consists of a deck with $n+1$ cards $\{ 1, 2, \cdots, n, n+1 \}$. 
 Every player starts with 2 chips. At the start of the game, each player antes one of their chips placing it
 into a central pot of $p = n$ chips. 
-Then, chance deals one card to each player. 
+Then, chance deals one card to each player.
 The game starts with Player 1 and proceeds sequentially to the next player that is not eliminated. 
 A player may bet (if they have a chip) or pass. 
 To bet, a player puts the chip into the pot: $p \leftarrow p + 1$. 
 A player can fold by passing when $n < p < 2r$ where $r$ is the number of remaining players, \ie~players that have not been eliminated. 
 If a player folds, they are eliminated and receive a payoff of -1 for the chip lost. 
-The game proceeds until either (i) all but one player has folded, or (ii) $p = n$ and everyone has passed or all the 
+The game proceeds until either (i) all but one player has folded, or (ii) $p = r$ and everyone has passed or all the 
 remaining players have run out of chips. 
 In the former case, the remaining player wins the pot. In the latter case, the 
 remaining player with the highest-valued card wins the pot. In all cases, a player's payoff is the number of chips
@@ -905,10 +906,10 @@ Kuhn's original game used $n = 2$. The form of every equilibrium strategy for KP
 by Kuhn and and used in a number of studies, \eg~\cite{hoehn05}. 
 The expected value to the first player if all players play equilibrium strategies is $-1/18$. 
 In KP$(3)$, an $\epsilon$-equilibrium with $\epsilon = 0.0044563$ was 
-found experimentally using standard counterfactual regret minimization~\cite{AbouRisk10}. 
+found experimentally using $10^8$ iterations of standard CFR minimization~\cite{AbouRisk10}. 
 Recently, a family of parameterized equilibrium profiles were analytically derived for KP$(3)$~\cite{Szafron13Kuhn}.
 While replicator dynamics have been applied to abstractions of complex Poker games~\cite{ponsen09b},
-we are unaware of any work that analyzes KP$(n > 3)$.
+we are unaware of any work studying KP$(n)$ for $n > 3$.
 
 \begin{figure}[t]
 \begin{center}
@@ -943,7 +944,7 @@ Therefore, in the case of two players, the graphs show exploitability.
 
 
 The convergence rate and overall performance of the average and current strategy profiles are shown in
-Figure~\ref{fig:sfrd2-conv}. The exploitability quickly drops from to low values within the first few hundred iterations. 
+Figure~\ref{fig:sfrd2-conv}. The exploitability quickly drops to low values within the first few hundred iterations. 
 The values for $t = (100,200,300)$ are $(0.916, 0.171, 0.096)$ to less than $0.001$, with 
 $u_1(\bx(t)) \approx -0.548$, $u_2(\bx(t)) \approx 0.558$ at $t = 100000$. 
 The average performance slowly but steadily rises from $-0.25$ initially to $0.109$ at $t = 100000$. The performance of the 
@@ -991,11 +992,11 @@ Interestingly, the current strategy profiles do not seem to reduce $\epsilon$ sm
 has not found any attracting stable fixed points or that the strategies are ``orbiting'' around a fixed point, possibly the one 
 being approached by $\bar{\bx}(t)$. We investigated further by comparing the strategies to the known equilibrium set described 
 in~\cite{Szafron13Kuhn}. Specifically, we computed a Euclidean distance between the particular probabilities $\sigma(I,a)$ necessary for 
-all players to minimize their worst-case payoff, for points $t = 10^1, 10^2, 10^3, 10^4, 99980, 99990, 10^5$. These distance values for the average 
-strategy are $(1.288,0.642,0.189,0.026,$ $0.003,0.003,0.003)$ and current strategy are
-$(1.152,0.364,$ $0.312, 0.0002, <10^{-5},  <10^{-5},  <10^{-5})$. This could be because the
+all players to minimize their worst-case payoff, for points $t = 10^1, 10^2, 10^3, 10^4, 99980, 99990, 10^5$. 
+These distances for the average profile are $(1.288, 0.642, 0.189, 0.026,$ $0.003,$ $0.003, 0.003)$ and for the current profile are
+$(1.152,$ $0.364,$ $0.312,$ $0.0002,$ $ <10^{-5},  <10^{-5},  <10^{-5})$. This could be because the
 current strategies are switching among the approximate equilibria with different worst-case penalties for making mistakes, 
-and yet maintaining the necessary important values that characterize the equilibrium set.  
+and yet staying close to the important values that characterize the particular equilibrium.  
 In contrast, the average strategies seem to focus on reducing $\epsilon$. 
 
 From the performance graphs, we see that early on the performance spikes and 
@@ -1017,7 +1018,7 @@ any number of players.
 Also, since the dynamics are realization-equivalent to standard replicator dynamics, dominated strategies will not survive 
 in the current strategies and will slowly be played less and less in the average strategies as well. 
 In all cases, both current and average strategy profiles perform better than the baseline, but the average strategies sometimes perform 
-better and appear to be more stable in time. 
+better and fluctuate less over time. 
 
 \section{Conclusion and Future Work}
 
