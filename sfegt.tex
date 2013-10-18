@@ -508,7 +508,7 @@ is that in two-player zero-sum games, if after $T$ trials each average regret $\
 then the average profile $\bar{\sigma}^T$ converges to a $2\epsilon$-equilibrium.
 
 Counterfactual Regret (CFR) is a notion of regret at the information set level for extensive-form games~\cite{CFR}. 
-Suppose player $i$ plays with strategy $\sigma_i$. The counterfactual value of taking action $a \in A(I)$ at information 
+Suppose player $i$ plays with strategy $\sigma_i$. The \defword{counterfactual value} of taking action $a \in A(I)$ at information 
 set $I$ is the expected payoff when $I$ is reached given that player $i$ played to reach $I$ and the opponents played 
 $\sigma_{-i}$, 
 \begin{equation}
@@ -986,8 +986,8 @@ are shown in Figure~\ref{fig:sfrd34}.
 %cur 99990 dist = 1.51017605680845e-06
 %cur 100000 dist = 1.51017605680845e-06
 
-In KP$(3)$, we notice again that $\bar{\bx}(t)$ reaches to a low value of $\epsilon$ relatively quickly, within 
-a few thousand iterations, reaching $\epsilon \approx 0.00169$ at $t = 100000$. 
+In KP$(3)$, we notice again that $\bar{\bx}(t)$ reaches low values of $\epsilon$ relatively quickly, within 
+a few thousand iterationsm, reaching $\epsilon \approx 0.00169$ at $t = 100000$. 
 Interestingly, the current strategy profiles do not seem to reduce $\epsilon$ smoothly as the average strategy does. This could be because the evolution 
 has not found any attracting stable fixed points or that the strategies are ``orbiting'' around a fixed point, possibly the one 
 being approached by $\bar{\bx}(t)$. We investigated further by comparing the strategies to the known equilibrium set described 
