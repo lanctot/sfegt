@@ -350,7 +350,7 @@ survey of the fundamental topics, see~\cite{ShoLB08}.
 %where $\sigma$ is a mixed profile and $\sigma(s)$ is the probability of playing $s$. 
 
 An extensive-form game models sequential decision making. There are $n$ decision-making agents called \defword{players} 
-$i \in N = \{ 1, \ldots, n \}$. Each player chooses an \defword{action} leading to a sequence of actions called \defword{histories} $h \in H$. 
+$i \in N = \{ 1, \ldots, n \}$. In turn, players choose \defword{actions} leading to sequences called \defword{histories} $h \in H$. 
 A history $z \in Z$, where $Z \subseteq H$, is called a \defword{terminal history} represents a fully-played game from start to finish. 
 At each terminal history $z$ there is a payoff $u_i(z)$ in $[0,1]$ to each player $i$. At each nonterminal history $h$, there is a single 
 current player to act, determined by $P: H \backslash Z \rightarrow N \cup \{ c \}$ where $c$ is a special player called \defword{chance}
@@ -361,7 +361,9 @@ in this case we call $h$ a \defword{prefix} of $h'$ and denote this relationship
 if $h \sqsubset h'$ and $h' \sqsubset h''$ then $h \sqsubset h''$. Each set $N$, $H$, $Z$, and $A(h)$ are finite and every 
 history has finite length.
 
-Denote $\cI$ the global information partition with disjoint parts $\cI_i$ for each player $i$. Intuitively, an \defword{information set} 
+Define $\cI = \{ \cI_i | i \in N \}$ the set of information partitions. 
+$\cI_i$ is a partition over $H_i = \{ h | P(h) = i \}$ where each part is call an \defword{information set}.
+Intuitively, an information set
 $I \in \cI_i$ that belongs to player $i$ represents a state of the game with respect to what player $i$ knows. 
 Formally, $I$ is a set of histories that a player cannot tell apart (due information hidden from that player). For all
 $h,h' \in I$, $A(h) = A(h')$ and $P(h) = P(h')$; hence, often we use $A(I)$ and $P(I)$. 
