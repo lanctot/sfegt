@@ -507,7 +507,7 @@ $Q^T_{min} = \sum_{t=1}^T(l_{min}^t)^2$.
 
 There are important connections between game theory and regret minimization~\cite{Blum07}. One main result 
 is that in two-player zero-sum games, if after $T$ trials each average regret $\bar{R}_i^T \le \epsilon$, 
-then the average profile $\bar{\sigma}^T$ converges to a $2\epsilon$-equilibrium.
+then the average profile $\bar{\sigma}^T$ corresponds to a $2\epsilon$-equilibrium.
 
 Counterfactual Regret (CFR) is a notion of regret at the information set level for extensive-form games~\cite{CFR}. 
 Suppose player $i$ plays with strategy $\sigma_i$. The \defword{counterfactual value} of taking action $a \in A(I)$ at information 
@@ -623,7 +623,7 @@ We know that $u(\bx) = u(\sigma)$ by the statement of the theorem, so we can rem
 Then, similarly to above the utilities can be decomposed into a dot product of vectors and re-arranged, leading to
 \[
   \bu(\bx_{-i}) \cdot (x_i(q',t)(\bg_{q'}(\bx_i)) 
-= \bu(\sigma_{-i})~\cdot \sum_{s_i \in S_i(q')} \sigma(s_i,t) \boldsymbol\sigma_{i \rightarrow s_i}.
+= \bu(\boldsymbol\sigma_{-i})~\cdot \sum_{s_i \in S_i(q')} \sigma(s_i,t) \boldsymbol\sigma_{i \rightarrow s_i}.
 \]
 \noindent The vectors on left are realization equivalent by the statement of the theorem. So, this 
 is only true if the vectors on the right are realization equivalent. The right-side vectors are realization equivalent 
