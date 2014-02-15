@@ -527,15 +527,17 @@ where $Z_I = \{ (h,z) | z \in Z, h \in I, h \sqsubset z\}$, and $\sigma_{I \righ
 at $I$ action $a$ is taken with probability $1$. 
 The CFR algorithm places a regret minimizer at each $I \in \cI_i$ which treats $v_i(I,\sigma,a)$ as the payoff for taking action $a$. 
 The main result is that the combination of individual regret minimizers
-also minimizes overall average regret, and hence the average profile is a $2\epsilon$-equilibrium, with $\epsilon \rightarrow 0$
+also minimizes overall average regret, and hence $\bar{\sigma}^T$ is a $2\epsilon$-equilibrium, with $\epsilon \rightarrow 0$
 as $T \rightarrow \infty$. 
 
-\section{New Developments of SFRD}
+\section{Further Developments of SFRD}
 
 In this section, we describe new developments and analyses of sequence-form replicator dynamics. 
 First, we show that the generalization to $n > 2$ players preserves the theoretical properties proved in the original work. 
 Second, we show that discrete-time SFRD can minimize a form of counterfactual regret leading to equilibrium convergence guarantees
 in two-player zero-sum games. 
+
+Note that these are two separate developments, but the two will be related in Section~\ref{sec:exp}.
 
 % Hmm, can I do this?
 % - Thirdly, we discuss the stability of the solution and its relationship to extensive-form trembling-hand perfect equilibrium.
@@ -543,18 +545,19 @@ in two-player zero-sum games.
 \subsection{More Than Two Players}
 
 In this subsection, we show that general $n$-player SFRD maintains sequence-form constraints and is 
-realization equivalent to $n$-player normal-form replicator dynamics. Overall, the analysis here follows~\cite{Gatti13Efficient}
-with some adjustments. 
+realization equivalent to $n$-player normal-form replicator dynamics. 
+
+Overall, the analysis here is based on the previous one in~\cite{Gatti13Efficient} with some adjustments. 
 
 \begin{definition}
 A choice $q \in Q_i$ for player $i$ is \defword{reachable} under $\bx_i$ if and only if $x_i(q) > 0$. 
 \end{definition}
 
 We will restrict our analysis to reachable choices of $\bx_i$. The behavior for unreachable parts of $\bx_i$ is 
-irrelevant since the payoff is unaffected over all possible opponent profiles. 
+irrelevant since the expected payoff of any profile including it is unaffected over all possible opponent strategies. 
 
 \begin{theorem}
-Given a valid realization profile $\bx(t) = $\\ $(\bx_1(t), \ldots, \bx_n(t))$, a new $\bx(t+1)$ produced by
+Given a valid realization profile $\bx(t) =$ \\ $(\bx_1(t), \ldots, \bx_n(t))$, a new $\bx(t+1)$ produced by
 Equation~\ref{eq:dt-sfrd} satisfies the sequence-form constraints. 
 \end{theorem}
 \begin{proof}
@@ -610,26 +613,26 @@ to the standard normal-form replicator dynamics. In our $n$-player analysis, we 
 (\cite[Lemma 9]{Gatti13Efficient}).
 
 \begin{theorem}
-Given some game $G$ with player set $N$, 
-let $\sigma(t)$ be a mixed strategy profile and $\sigma(t+1)$ be the profile produced by 
-standard discrete-time replicator dynamics using $G$'s normal-form representation. 
-Let $\bx(t)$ be a realization profile and $\bx(t+1)$ a realization profile in $G$'s sequence-form produced by 
-Equation~\ref{eq:dt-sfrd}. Then for all players $i \in N$, $\bx(t+1)$ and $\sigma(t+1)$ are realization equivalent.
+Given some game $\Gamma$ with player set $N$, 
+let $\rho(t)$ be a mixed strategy profile and $\rho(t+1)$ be the profile produced by 
+standard discrete-time replicator dynamics using $\Gamma$'s normal-form representation. 
+Let $\bx(t)$ be a realization profile and $\bx(t+1)$ a realization profile in $\Gamma$'s sequence-form produced by 
+Equation~\ref{eq:dt-sfrd}. Then for all players $i \in N$, $\bx(t+1)$ and $\rho(t+1)$ are realization equivalent.
 \end{theorem}
 \begin{proof}
 Let $s_i \in S_i$ be a pure strategy for player $i$, and $S_i(q) = \{ s_i | s_i \in S_i, q \mbox{ is taken in } s_i \}$.
-For $q' \in succ_i(q)$, $x_i(q', t) = \sum_{s_i \in S_i(q')} \sigma(s_i)$. 
+For $q' \in succ_i(q)$, $x_i(q', t) = \sum_{s_i \in S_i(q')} \rho(s_i)$. 
 We need to show that this is also true at time $t+1$. By applying Equation~\ref{eq:dt-sfrd} and standard
 replicator dynamics, this becomes
 \[
   x_i(q',t) \frac{u_i(\bx_{i \rightarrow g_{q'}})}{u(\bx)} 
-= \sum_{s_i \in S_i(q')} \left( \sigma(s_i,t) \frac{u_i(\sigma_{i \rightarrow s_i})}{u(\sigma)} \right)
+= \sum_{s_i \in S_i(q')} \left( \rho(s_i,t) \frac{u_i(\rho_{i \rightarrow s_i})}{u(\rho)} \right)
 \]
-We know that $u(\bx) = u(\sigma)$ by the statement of the theorem, so we can remove these denominators.
+We know that $u(\bx) = u(\rho)$ by the statement of the theorem, so we can remove these denominators.
 Then, similarly to above the utilities can be decomposed into a dot product of vectors and re-arranged, leading to
 \[
   \bu(\bx_{-i}) \cdot (x_i(q',t)(\bg_{q'}(\bx_i)) 
-= \bu(\boldsymbol\sigma_{-i})~\cdot \sum_{s_i \in S_i(q')} \sigma(s_i,t) \boldsymbol\sigma_{i \rightarrow s_i}.
+= \bu(\boldsymbol\rho_{-i})~\cdot \sum_{s_i \in S_i(q')} \sigma(s_i,t) \boldsymbol\rho_{i \rightarrow s_i}.
 \]
 \noindent The vectors on left are realization equivalent by the statement of the theorem. So, this 
 is only true if the vectors on the right are realization equivalent. The right-side vectors are realization equivalent 
@@ -645,10 +648,10 @@ Equation~\ref{eq:ct-sfrd} satisfies the sequence-form constraints.
 \begin{theorem}
 \label{thm:ct-releq}
 Given some game $G$ with player set $N$, 
-let $\sigma(t)$ be a mixed strategy profile and $\sigma(t + \Delta t)$ be the profile produced by 
+let $\rho(t)$ be a mixed strategy profile and $\rho(t + \Delta t)$ be the profile produced by 
 standard continuous-time replicator dynamics using $G$'s normal-form representation. 
 Let $\bx(t)$ be a realization profile and $\bx(t + \Delta t)$ a realization profile in $G$'s sequence-form produced by 
-Equation~\ref{eq:ct-sfrd}. Then for all players $i \in N$, $\bx(t+\Delta t)$ and $\sigma(t + \Delta t)$ are realization equivalent.
+Equation~\ref{eq:ct-sfrd}. Then for all players $i \in N$, $\bx(t+\Delta t)$ and $\rho(t + \Delta t)$ are realization equivalent.
 \end{theorem}
 
 The proofs of Theorems \ref{thm:ct-constraints} and \ref{thm:ct-releq} are identical to the proofs for the discrete case 
@@ -656,7 +659,7 @@ except $g_q(\bx_i)$ is replaced by $\Delta g_q(\bx_i)$.
 
 \subsection{Link to CFR Minimization}
 
-In this section we show that discrete-time SFRD (equation~\ref{eq:dt-sfrd}) corresponds to a form of counterfactual 
+In this section, we show that discrete-time SFRD (equation~\ref{eq:dt-sfrd}) corresponds to a form of counterfactual 
 regret minimization. As a result, under mild conditions convergence to an equilibrium is guaranteed 
 in two-player zero-sum games. 
 %We show convergence in practice in the general case in Section~\ref{sec:exp}. 
