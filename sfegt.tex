@@ -700,9 +700,9 @@ From Equation~\ref{eq:dt-sfrd}, let $w_i(t) = x_i(q,t)$, we have
 \end{eqnarray*}
 The second and fourth lines follow because scaling by a constant at $I$ does not affect the distribution at $I$ due to normalization.
 The third line substitutes $u_i(\bx_{i \rightarrow g_q})$ from Eq.~\ref{eq:loss}. 
-Here, $\eta = \Delta_{-i}(I) / ({\max_{a' \in A(I)} u_i(\bx_{i \rightarrow g_{(I,a')}})})$ and $0 \le \eta \le 1$, since $\Delta_{-i}(I)$
-is a payoff range, subtracts the minimum value at $I$, 
-and ${\max_{a' \in A(I)} u_i(\bx_{i \rightarrow g_{(I,a')}})}$ includes terms for $(h,z) \not\in Z_I$.
+Here, $\eta = \Delta_{-i}(I) / ({\max_{a' \in A(I)} u_i(\bx_{i \rightarrow g_{(I,a')}})})$ is the learning rate of $\PW(I)$,
+and $0 \le \eta \le 1$ since $\Delta_{-i}(I)$ is a payoff range, subtracts the minimum value at $I$, 
+and because ${\max_{a' \in A(I)} u_i(\bx_{i \rightarrow g_{(I,a')}})}$ includes terms for $(h,z) \not\in Z_I$.
 \end{proof}
 
 %This result shows that discrete-time SFRD also minimizes the individual regret of the $\PW(I)$. 
@@ -724,18 +724,18 @@ $q = (I,a)$, using $v_i(I,\sigma,a)$ as defined in Eq.~\ref{eq:cfv} and for any 
 }
 \end{lemma}
 \begin{proof}
-First, since $q = (I,a)$ and $a, a' \in A(I)$, observe that the realization weights for 
+First, since $q = (I,a)$ and both $a, a' \in A(I)$, observe that the realization weights for 
 profiles $\bx_{i \rightarrow g(I,a')}$ and $\bx_{i \rightarrow g_q}$ are identical 
-for all $q' \in Q_i$ leading to histories outside $Z_I$. Therefore, the left-hand side 
+for all $q' \in Q_i$ leading to histories outside $Z_I$. Therefore, the left side 
 can be rewritten as 
 \begin{eqnarray*}
-  &   & \max_{a' \in A(i)} \sum_{(ha',z) \in Z_I} \pi^{\sigma}_i(h) \pi^{\sigma}_i(ha,z) \pi^{\sigma}_{-i}(z) u_i(z) \\
+  &   & \max_{a' \in A(I)} \sum_{(ha',z) \in Z_I} \pi^{\sigma}_i(h) \pi^{\sigma}_i(ha,z) \pi^{\sigma}_{-i}(z) u_i(z) \\
   &   & - \sum_{(h,z) \in Z_I} \pi^{\sigma}_i(h) \pi^{\sigma}_i(ha,z) \pi^{\sigma}_{-i}(z) u_i(z) \\
-  & = & \max_{a' \in A(i)} \sum_{(ha',z) \in Z_I} \pi^{\sigma}_i(ha,z) \pi^{\sigma}_{-i}(z) u_i(z) \\
+  & = & \max_{a' \in A(I)} \sum_{(ha',z) \in Z_I} \pi^{\sigma}_i(ha,z) \pi^{\sigma}_{-i}(z) u_i(z) \\
   &   & - \sum_{(h,z) \in Z_I} \pi^{\sigma}_i(ha,z) \pi^{\sigma}_{-i}(z) u_i(z) \\
-  & = & \max_{a' \in A(i)} v_i(I,\sigma,a') - v_i(I,\sigma,a).
+  & = & \max_{a' \in A(I)} v_i(I,\sigma,a') - v_i(I,\sigma,a).
 \end{eqnarray*}
-The second line follows from the fact that $\sigma_i(h) = 1$ when $i$ uses $g_q(\bx_i)$ for $h \in I$ and 
+The second line follows from the fact that $\pi^\sigma_i(h) = 1$ when $i$ uses $g_q(\bx_i)$ for $h \in I$, and 
 distributions $\sigma(I')$ for $I'$ that come after $I$ are unchanged by Eq.~\ref{eq:gdef}. The last line follows from the definition of 
 counterfactual value in Eq.~\ref{eq:cfv}.
 \end{proof}
@@ -746,16 +746,18 @@ as in~\cite{CFR}:
 \label{eq:cfr}
 \bar{R}^T_{i,imm}(I) = \frac{1}{T} \max_{a \in A(I)} \left( \sum_{t=1}^T v_i(I, \sigma^t, a) - v_i(I, \sigma^t) \right),
 \end{equation}
-where $\sigma^t$ is the profile used by both players at time $t$. 
-As in the original work, we show that the combination of PW learners over all information sets
+where $\sigma^t$ is the profile used by both players at time $t$, and $v_i(I, \sigma^t) = \sum_{a \in A(I)} \sigma^t(I,a) v_i(I,\sigma^t,a)$ 
+is the counterfactual value for playing $\sigma(I)$ at $I$.  
+
+As in the original work, we show that the combination of $\PW(I)$ learners over all $I$ %over all information sets
 minimizes overall regret. %Hence, discrete-time SFRD minimizes overall regret. 
 
 \begin{lemma}
 \label{lem:cfr}
 Let $R^T_i$ be overall regret for player $i$, and $\bar{R}^T_i = R^T / T$, and $(x)^+ = \max(0,x)$. The overall regret of  
-discrete-time SFRD is bounded by: 
+discrete-time SFRD for player $i$ is bounded by: 
 \[
-\bar{R}^T_i \le \frac{2 \Delta_i}{T} \sum_{ I \in \cI_i} \left( \max_{a \in A(I)} \sum_{t=1}^T ( l^t_{I,\sigma} - l^t_{I,a}) \right)^+. 
+\bar{R}^T_i \le \frac{\Delta_i}{T} \sum_{ I \in \cI_i} \left( \max_{a \in A(I)} \sum_{t=1}^T ( l^t_{I,\sigma} - l^t_{I,a}) \right)^+,
 %            \le O \left( \frac{|\cI_i| \ln |A_i|}{\eta_{\min}\sqrt{T}} \right),  
 \]
 where $\Delta_i \le \max_{z,z' \in Z} ( u_i(z) - u_i(z') )$ is the payoff range, 
@@ -768,9 +770,9 @@ For $I \in \cI_i$, $v_i(I,\sigma,a) - v_i(I,\sigma)$
  & = &   (\max_{a' \in A(I)} v(I,\sigma,a') - \Delta_{-i}(I) l_{I,a})\\
  &   & - \sum_{a'' \in A(I)} \sigma(I,a'') \left( \max_{a' \in A(I)} v_i(I,\sigma,a') - \Delta_{-i}(I) l_{I,a''} \right) \\ 
  & = & - \Delta_{-i}(I) l_{I,a} + \sum_{a'' \in A(I)} \sigma_i(I,a'') \Delta_{-i}(I) l_{I,a''}\\
- & = & \Delta_{-i}(I) ( l_{I,\sigma} - l_{I,a} ) 
+ & = & \Delta_{-i}(I) ( l_{I,\sigma} - l_{I,a} ).
 \end{eqnarray*}
-The first line follows from Eq~\ref{eq:loss} and Lemma~\ref{lem:rel-cfv}.
+The first line follows from Eq~\ref{eq:loss}, Lemma~\ref{lem:rel-cfv}, and the definition of $v_i(I,\sigma)$ from above. 
 The second line follows since $\sum_{a'' \in A(I)} \sigma_i(I,a'') = 1$. Substituting into Eq.~\ref{eq:cfr} leads to
 \begin{equation}
 \label{eq:pw-immreg}
@@ -822,14 +824,15 @@ For player $i \in N$, if $\forall I \in \cI_i$, $1 \le t \le T$,
 \]
 then overall regret of discrete-time SFRD is bounded by: 
 \[
-\bar{R}^T_i \le \frac{2 \Delta_i |\cI_i|}{\eta^* T} \left( \ln{|A_i|} + (\eta^*)^2 Q_{min}  \right), 
+\bar{R}^T_i \le \frac{\Delta_i |\cI_i|}{\eta^* T} \left( \ln{|A_i|} + (\eta^*)^2 Q_{min}  \right), 
 \]
 where $Q_{min} = \max_{I \in \cI_i} Q^T_{I,min}, |A_i| = \max_{I \in \cI_i}|A(I)|,$ and $\eta^*$ is the $\eta^*_I$ for $I \in \cI_i$ 
 that maximizes $Q^T_{I,min}$. 
 \end{theorem}
 \begin{proof}
 Recall the general regret bound of PW from Section~\ref{sec:regmin}. By Lemma~\ref{lem:diffrates}, each individual $\PW(I)$ is 
-bounded by $R^T_{i,imm}(I) \le \eta^*_I Q^T_{I,min} + \ln K / \eta^*_I$. Then, applying the bound to Equation~\ref{eq:pw-immreg}, by Lemma~\ref{lem:cfr}, the overall bound is obtained by summing over all the information sets. 
+bounded by $R^T_{i,imm}(I) \le \eta^*_I Q^T_{I,min} + \ln K / \eta^*_I$. Then, applying the bound to Equation~\ref{eq:pw-immreg}, 
+by Lemma~\ref{lem:cfr} the overall bound is obtained by summing over all the information sets. 
 \end{proof}
 
 The condition on the parameter $\eta_I$ of Theorem~\ref{thm:main} is satisfied for a large class of games and strategies. 
