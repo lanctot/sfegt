@@ -1,4 +1,4 @@
-prefix=sfegt
+prefix=fp135-lanctot
 #dbdir=~/Dropbox/sm-tron
 
 pdf: $(prefix).tex
