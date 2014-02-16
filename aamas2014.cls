@@ -1422,9 +1422,7 @@
 % acr July 24 altered for 2010
 \newtoks\copyrightetc
 \global\boilerplateBefore={{\bf Appears in:} }
-\global\boilerplateAfter={{\it Proceedings of the 13th International
-Conference on Autonomous Agents and Multiagent Systems (AAMAS 2014), 
-Lomuscio, Scerri, Bazzan, Huhns (eds.), May, 5--9, 2014, Paris, France.}}
+\global\boilerplateAfter={{\it Alessio Lomuscio, Paul Scerri, Ana Bazzan, and Michael Huhns (eds.), Proceedings of the 13th International Conference on Autonomous Agents and Multiagent Systems (AAMAS 2014), May 5-9, 2014, Paris, France.}}
 \global\copyrightetc{Copyright \copyright\ \the\copyrtyr , 
 International Foundation for Autonomous Agents and Multiagent Systems (www.ifaamas.org). All rights reserved.}
 

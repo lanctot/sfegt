@@ -4,6 +4,9 @@ prefix=sfegt
 pdf: $(prefix).tex
 	latexmk -pdf $(prefix).tex
 
+ps: $(prefix).tex
+	latexmk -ps $(prefix).tex
+
 view: pdf
 	evince $(prefix).pdf
 
